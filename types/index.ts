@@ -1,7 +1,8 @@
 // Wallet types
 export interface Wallet {
   address: string;
-  chainId?: string | number;  // Support both string and number for chainId
+  chainId?: number;
+  provider?: any;
   walletClientType?: string;
 }
 
@@ -9,7 +10,18 @@ export interface Wallet {
 export interface TokenBalance {
   ethBalance: string;
   uscBalance: string;
-  isMock?: boolean;
+}
+
+// Network types
+export interface Network {
+  id: number;
+  name: string;
+  shortName: string;
+  icon: string;
+  explorerUrl: string;
+  rpcUrl: string;
+  testnet: boolean;
+  color: string;
 }
 
 // User types
@@ -26,7 +38,7 @@ export interface UserInfo {
 }
 
 // API response types
-export interface ApiResponse<T> {
+export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
   error?: string;

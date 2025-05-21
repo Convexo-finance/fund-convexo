@@ -5,7 +5,7 @@ import Loading from '../components/shared/Loading';
 import Button from '../components/shared/Button';
 import WalletInfo from '../components/wallet/WalletInfo';
 import { TokenBalance, Wallet } from '../types/index';
-import { getMockBalances } from '../lib/walletService';
+import { useTokenBalances } from '../hooks/useTokenBalances';
 import { useSmartWallets } from '../components/SmartWalletsProvider';
 import { sendSmartAccountTransaction } from '../utils/smartAccountHelper';
 
@@ -13,47 +13,18 @@ export default function Home() {
   const { login, ready, authenticated, user, logout } = usePrivy();
   const { wallets } = useWallets();
   const { client, smartAccountAddress, isLoading: isSmartWalletLoading } = useSmartWallets();
-  const [balances, setBalances] = useState<TokenBalance>({ ethBalance: '0', uscBalance: '0' });
-  const [loading, setLoading] = useState<boolean>(false);
   const [smartWalletTxHash, setSmartWalletTxHash] = useState<string>('');
   const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
   // Get embedded wallet from Privy
   const userWallet = wallets?.[0];
-
-  // Load balances when wallet is available
-  useEffect(() => {
-    if (userWallet?.address) {
-      fetchBalances(userWallet.address);
-    }
-  }, [userWallet?.address]);
-
-  // Get balances (using mock data for demo)
-  const fetchBalances = async (address: string) => {
-    setLoading(true);
-    try {
-      // In a real app, you would fetch from an API or blockchain
-      // For demo, we use mock data
-      const mockBalances = await getMockBalances(address);
-      setBalances(mockBalances);
-    } catch (error) {
-      console.error('Error fetching balances:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle login
-  const handleLogin = () => {
-    login();
-  };
-
-  // Handle refresh balances
-  const handleRefreshBalances = () => {
-    if (userWallet?.address) {
-      fetchBalances(userWallet.address);
-    }
-  };
+  
+  // Use our custom hook to fetch real balances from Optimism
+  const { 
+    balances, 
+    isLoading: isBalanceLoading, 
+    refetch: refreshBalances 
+  } = useTokenBalances(userWallet?.address);
 
   // Send a test transaction via the smart wallet
   const sendSmartWalletTransaction = async () => {
@@ -91,7 +62,7 @@ export default function Home() {
           <h2>Welcome to Papayapp</h2>
           <p>Login with email or phone to access your wallet</p>
           <Button 
-            onClick={handleLogin} 
+            onClick={login} 
             variant="primary" 
             size="large"
           >
@@ -112,8 +83,8 @@ export default function Home() {
                 <WalletInfo 
                   wallet={userWallet as unknown as Wallet} 
                   balances={balances}
-                  isLoading={loading}
-                  onRefresh={handleRefreshBalances}
+                  isLoading={isBalanceLoading}
+                  onRefresh={refreshBalances}
                 />
               </div>
               

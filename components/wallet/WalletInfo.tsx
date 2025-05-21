@@ -21,6 +21,17 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   
   return (
     <div className="wallet-info">
+      <div className="network-indicator">
+        <div className="network-badge">
+          <img 
+            src="https://optimism.io/images/favicon.ico" 
+            alt="Optimism Logo" 
+            className="network-icon"
+          />
+          <span>Optimism Network</span>
+        </div>
+      </div>
+      
       <h3>Your Wallet</h3>
       
       <div className="wallet-address-container">
@@ -49,13 +60,27 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         </div>
         
         <div className="balance-item">
-          <span>ETH:</span>
+          <div className="token-info">
+            <img 
+              src="https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp" 
+              alt="ETH" 
+              className="token-icon"
+            />
+            <span>ETH</span>
+          </div>
           <span className="balance-value">{parseFloat(balances.ethBalance).toFixed(6)} ETH</span>
         </div>
         
         <div className="balance-item">
-          <span>USC:</span>
-          <span className="balance-value">{parseFloat(balances.uscBalance).toFixed(2)} USC</span>
+          <div className="token-info">
+            <img 
+              src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" 
+              alt="USDC" 
+              className="token-icon"
+            />
+            <span>USDC</span>
+          </div>
+          <span className="balance-value">{parseFloat(balances.uscBalance).toFixed(2)} USDC</span>
         </div>
         
         <Button 
@@ -75,6 +100,30 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           padding: 1.5rem;
           border-radius: 8px;
           margin-top: 1rem;
+          position: relative;
+        }
+        
+        .network-indicator {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 1rem;
+        }
+        
+        .network-badge {
+          display: flex;
+          align-items: center;
+          background: #ff0b521a;
+          color: #ff0b51;
+          padding: 0.5rem 0.8rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 500;
+        }
+        
+        .network-icon {
+          width: 18px;
+          height: 18px;
+          margin-right: 0.5rem;
         }
         
         h3 {
@@ -142,10 +191,23 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         .balance-item {
           display: flex;
           justify-content: space-between;
+          align-items: center;
           padding: 0.8rem;
           background: #eee;
           margin-bottom: 0.5rem;
           border-radius: 4px;
+        }
+        
+        .token-info {
+          display: flex;
+          align-items: center;
+        }
+        
+        .token-icon {
+          width: 24px;
+          height: 24px;
+          margin-right: 0.5rem;
+          border-radius: 50%;
         }
         
         .balance-value {
