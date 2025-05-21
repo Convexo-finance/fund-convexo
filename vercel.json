@@ -1,47 +1,7 @@
 {
-  "version": 2,
-  "public": true,
-  "github": {
-    "enabled": true
-  },
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/papayapp"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains"
-        }
-      ]
-    }
-  ],
-  "buildCommand": null,
-  "outputDirectory": null,
-  "installCommand": null,
-  "projects": {
-    "papayapp": {
-      "buildCommand": "npm run build",
-      "outputDirectory": ".next",
-      "framework": "nextjs",
-      "rootDirectory": "papayapp"
-    }
-  }
+  "buildCommand": "cd papayapp && npm install && npm run build",
+  "outputDirectory": "papayapp/.next",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/papayapp/$1" }
+  ]
 } 
