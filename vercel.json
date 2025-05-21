@@ -42,6 +42,5 @@
   "github": {
     "enabled": true,
     "silent": false
-  },
-  "analytics": true
+  }
 } 
