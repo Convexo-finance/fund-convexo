@@ -1,0 +1,20 @@
+{
+  "name": "papayapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd papayapp && next dev",
+    "build": "cd papayapp && next build",
+    "start": "cd papayapp && next start",
+    "vercel": "vercel",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel deploy --prod"
+  },
+  "dependencies": {
+    "permissionless": "^0.2.47",
+    "viem": "^2.30.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.5.3"
+  }
+}
