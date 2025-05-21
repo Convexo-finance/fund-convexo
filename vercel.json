@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm install typescript @types/react @types/node && npm run build",
+  "buildCommand": "rm -rf node_modules && npm install && npm run build",
   "outputDirectory": ".next"
 } 
