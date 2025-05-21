@@ -2,6 +2,7 @@ import React from 'react';
 import { Wallet, TokenBalance } from '../../types/index';
 import Button from '../../components/shared/Button';
 import Loading from '../../components/shared/Loading';
+import { getTokenLogoUrl, getNetworkLogoUrl, formatTokenBalance } from '../../utils/tokenUtils';
 
 interface WalletInfoProps {
   wallet: Wallet;
@@ -19,12 +20,19 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   // Generate QR code URL using a public QR code service
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${wallet.address}`;
   
+  // Get token logo URLs from CoinGecko
+  const ethLogoUrl = getTokenLogoUrl('ETH');
+  const usdcLogoUrl = getTokenLogoUrl('USDC');
+  
+  // Get Optimism network logo
+  const optimismLogoUrl = getNetworkLogoUrl(10); // 10 is Optimism Mainnet chain ID
+  
   return (
     <div className="wallet-info">
       <div className="network-indicator">
         <div className="network-badge">
           <img 
-            src="https://optimism.io/images/favicon.ico" 
+            src={optimismLogoUrl}
             alt="Optimism Logo" 
             className="network-icon"
           />
@@ -62,25 +70,33 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         <div className="balance-item">
           <div className="token-info">
             <img 
-              src="https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp" 
+              src={ethLogoUrl}
               alt="ETH" 
               className="token-icon"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/images/ethereum.png';
+              }}
             />
             <span>ETH</span>
           </div>
-          <span className="balance-value">{parseFloat(balances.ethBalance).toFixed(6)} ETH</span>
+          <span className="balance-value">{formatTokenBalance(balances.ethBalance, 6)} ETH</span>
         </div>
         
         <div className="balance-item">
           <div className="token-info">
             <img 
-              src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" 
+              src={usdcLogoUrl}
               alt="USDC" 
               className="token-icon"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/images/usdc.png';
+              }}
             />
             <span>USDC</span>
           </div>
-          <span className="balance-value">{parseFloat(balances.uscBalance).toFixed(2)} USDC</span>
+          <span className="balance-value">{formatTokenBalance(balances.uscBalance, 2)} USDC</span>
         </div>
         
         <Button 
@@ -124,6 +140,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           width: 18px;
           height: 18px;
           margin-right: 0.5rem;
+          border-radius: 50%;
         }
         
         h3 {
@@ -208,6 +225,8 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           height: 24px;
           margin-right: 0.5rem;
           border-radius: 50%;
+          background-color: white;
+          object-fit: contain;
         }
         
         .balance-value {

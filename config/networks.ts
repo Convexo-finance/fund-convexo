@@ -1,11 +1,12 @@
 import { Network } from '../types/index';
+import { getNetworkLogoUrl, getTokenLogoUrl } from '../utils/tokenUtils';
 
 // Optimism network configuration
 export const OPTIMISM: Network = {
   id: 10,
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
-  icon: 'https://optimism.io/images/favicon.ico',
+  icon: getNetworkLogoUrl(10),
   explorerUrl: 'https://optimistic.etherscan.io',
   rpcUrl: 'https://mainnet.optimism.io',
   testnet: false,
@@ -17,7 +18,7 @@ export const OPTIMISM_GOERLI: Network = {
   id: 420,
   name: 'Optimism Goerli',
   shortName: 'Optimism Goerli',
-  icon: 'https://optimism.io/images/favicon.ico',
+  icon: getNetworkLogoUrl(10),
   explorerUrl: 'https://goerli-optimism.etherscan.io',
   rpcUrl: 'https://goerli.optimism.io',
   testnet: true,
@@ -47,14 +48,14 @@ export const TOKENS = {
       symbol: 'ETH',
       name: 'Ethereum',
       decimals: 18,
-      icon: 'https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp'
+      icon: getTokenLogoUrl('ETH')
     },
     USDC: {
       symbol: 'USDC',
       name: 'USD Coin',
       decimals: 6,
       address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
-      icon: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png'
+      icon: getTokenLogoUrl('USDC')
     }
   },
   // Add other networks as needed
