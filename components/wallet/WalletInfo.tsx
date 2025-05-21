@@ -1,7 +1,7 @@
 import React from 'react';
-import { Wallet, TokenBalance } from '@/types/index';
-import Button from '@/components/shared/Button';
-import Loading from '@/components/shared/Loading';
+import { Wallet, TokenBalance } from '../../types/index';
+import Button from '../../components/shared/Button';
+import Loading from '../../components/shared/Loading';
 
 interface WalletInfoProps {
   wallet: Wallet;
@@ -16,16 +16,35 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   isLoading,
   onRefresh
 }) => {
+  // Generate QR code URL using a public QR code service
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${wallet.address}`;
+  
   return (
     <div className="wallet-info">
       <h3>Your Wallet</h3>
-      <p className="address">
-        <strong>Address:</strong> {wallet.address}
-      </p>
+      
+      <div className="wallet-address-container">
+        <div className="qr-code">
+          <img src={qrCodeUrl} alt="Wallet Address QR Code" />
+        </div>
+        <div className="address-details">
+          <p className="address">
+            <strong>Address:</strong> {wallet.address}
+          </p>
+          <a 
+            href={`https://optimistic.etherscan.io/address/${wallet.address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block-explorer-link"
+          >
+            View on Optimism Explorer
+          </a>
+        </div>
+      </div>
       
       <div className="balances">
         <div className="balances-header">
-          <h3>Balances</h3>
+          <h3>Optimism Balances</h3>
           {isLoading && <Loading size="small" text="" />}
         </div>
         
@@ -63,6 +82,31 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           color: #444;
         }
         
+        .wallet-address-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 1.5rem;
+        }
+        
+        .qr-code {
+          margin-bottom: 1rem;
+          background: white;
+          padding: 10px;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .qr-code img {
+          display: block;
+          width: 150px;
+          height: 150px;
+        }
+        
+        .address-details {
+          width: 100%;
+        }
+        
         .balances-header {
           display: flex;
           align-items: center;
@@ -81,7 +125,14 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           font-family: monospace;
           overflow-wrap: break-word;
           font-size: 0.85rem;
-          margin-bottom: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        .block-explorer-link {
+          display: inline-block;
+          color: #4B66F3;
+          text-decoration: underline;
+          margin-bottom: 1rem;
         }
         
         .balances {
@@ -103,6 +154,24 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .refresh-button {
           margin-top: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+          .wallet-address-container {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+          }
+          
+          .qr-code {
+            margin-right: 1.5rem;
+            margin-bottom: 0;
+          }
+          
+          .address-details {
+            flex: 1;
+            width: auto;
+          }
         }
       `}</style>
     </div>

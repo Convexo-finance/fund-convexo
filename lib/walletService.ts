@@ -1,4 +1,4 @@
-import { TokenBalance } from '@/types/index';
+import { TokenBalance } from '../types/index';
 
 /**
  * Generate a mock wallet address based on a user ID
@@ -12,15 +12,42 @@ export function generateMockWalletAddress(userId: string): string {
 }
 
 /**
- * Get mock wallet balances
+ * Get wallet balances from Optimism
  * @param address The wallet address
- * @returns Mock token balances
+ * @returns Token balances from Optimism
  */
-export function getMockBalances(address: string): TokenBalance {
-  return {
-    ethBalance: "0.05",
-    uscBalance: "10.00"
-  };
+export async function getMockBalances(address: string): Promise<TokenBalance> {
+  try {
+    // Fetch ETH balance from Optimism using public API
+    const response = await fetch(`https://api-optimistic.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=YourApiKey`);
+    const data = await response.json();
+    
+    let ethBalance = '0';
+    
+    // If the API request was successful
+    if (data.status === '1') {
+      // Convert wei to ETH (1 ETH = 10^18 wei)
+      const balanceInWei = data.result;
+      const balanceInEth = parseInt(balanceInWei) / 1e18;
+      ethBalance = balanceInEth.toString();
+    } else {
+      console.error('Error fetching from Optimism API:', data.message);
+      // Fallback to mock data if API fails
+      ethBalance = '0.05';
+    }
+    
+    return {
+      ethBalance,
+      uscBalance: "10.00" // Mock USC balance as example
+    };
+  } catch (error) {
+    console.error('Error fetching balances:', error);
+    // Return mock data as fallback
+    return {
+      ethBalance: "0.05",
+      uscBalance: "10.00"
+    };
+  }
 }
 
 /**
