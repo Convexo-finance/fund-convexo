@@ -29,4 +29,8 @@ dist
 # Misc
 .DS_Store
 thumbs.db
-*.pem 
+*.pem
+
+# Project specific
+README.md
+PR_DESCRIPTION.md 
