@@ -1,4 +1,6 @@
 import { ReactNode, createContext, useContext, useState } from 'react';
+// Import from privy but don't use wallet functionality yet
+import { usePrivy } from '@privy-io/react-auth';
 
 // Define the type for the context
 interface SmartWalletsContextType {
@@ -21,6 +23,7 @@ export const useSmartWallets = () => useContext(SmartWalletsContext);
 
 // The provider component
 export const SmartWalletsProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = usePrivy();
   const [client] = useState<any>(null);
   const [smartAccountAddress] = useState<string | null>(null);
   const [isLoading] = useState(false);
