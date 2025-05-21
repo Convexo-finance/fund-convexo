@@ -1,7 +1,4 @@
 {
-  "buildCommand": "cd papayapp && npm install && npm run build",
-  "outputDirectory": "papayapp/.next",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/papayapp/$1" }
-  ]
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": ".next"
 } 
