@@ -19,7 +19,7 @@ export function generateMockWalletAddress(userId: string): string {
 export async function getMockBalances(address: string): Promise<TokenBalance> {
   try {
     // Fetch ETH balance from Optimism using public API
-    const response = await fetch(`https://api-optimistic.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=YourApiKey`);
+    const response = await fetch(`https://api-optimistic.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=`);
     const data = await response.json();
     
     let ethBalance = '0';

@@ -34,7 +34,7 @@ export default function Home() {
     try {
       // In a real app, you would fetch from an API or blockchain
       // For demo, we use mock data
-      const mockBalances = getMockBalances(address);
+      const mockBalances = await getMockBalances(address);
       setBalances(mockBalances);
     } catch (error) {
       console.error('Error fetching balances:', error);

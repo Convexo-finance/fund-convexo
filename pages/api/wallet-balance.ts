@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getMockBalances } from '@/lib/walletService';
-import { TokenBalance } from '@/types/index';
+import { getMockBalances } from '../../lib/walletService';
+import { TokenBalance } from '../../types/index';
 
 type ResponseData = {
   success: boolean;
@@ -36,8 +36,8 @@ export default async function handler(
       });
     }
     
-    // Get mock balances
-    const balances = getMockBalances(address);
+    // Get balances and await the result since it's now an async function
+    const balances = await getMockBalances(address);
     
     return res.status(200).json({
       success: true,
