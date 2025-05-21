@@ -1,0 +1,4 @@
+[submodule "papayapp"]
+	path = papayapp
+	url = https://github.com/ETHcali/papayapp.git
+	branch = main 

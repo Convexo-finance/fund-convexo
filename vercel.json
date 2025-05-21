@@ -40,6 +40,13 @@
   ],
   "github": {
     "enabled": true,
-    "silent": false
+    "silent": false,
+    "autoJobCancelation": true
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    },
+    "submodules": true
   }
 } 
