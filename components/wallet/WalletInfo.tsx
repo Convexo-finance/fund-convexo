@@ -6,6 +6,7 @@ import { getTokenLogoUrl, getNetworkLogoUrl, formatTokenBalance } from '../../ut
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import SendTokenModal from './SendTokenModal';
 import { parseUnits, encodeFunctionData } from 'viem';
+import { useTokenPrices } from '../../hooks/useTokenPrices';
 
 interface WalletInfoProps {
   wallet: Wallet;
@@ -22,6 +23,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
 }) => {
   const { exportWallet } = usePrivy();
   const { wallets } = useWallets();
+  const { getPriceForToken } = useTokenPrices();
   
   // States for send token modal
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
@@ -41,6 +43,24 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   
   // Get Optimism network logo
   const optimismLogoUrl = getNetworkLogoUrl(10); // 10 is Optimism Mainnet chain ID
+  
+  // Calculate USD values
+  const ethPrice = getPriceForToken('ETH');
+  const usdcPrice = getPriceForToken('USDC');
+  
+  const ethValueUsd = parseFloat(balances.ethBalance) * ethPrice.price;
+  const usdcValueUsd = parseFloat(balances.uscBalance) * usdcPrice.price;
+  const totalValueUsd = ethValueUsd + usdcValueUsd;
+  
+  // Format USD values
+  const formatUsd = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
+  };
   
   // Handle export wallet button click
   const handleExportWallet = async () => {
@@ -211,6 +231,11 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           {isLoading && <Loading size="small" text="" />}
         </div>
         
+        <div className="total-value">
+          <span className="total-value-label">Total Value:</span>
+          <span className="total-value-amount">{formatUsd(totalValueUsd)}</span>
+        </div>
+        
         <div className="gas-sponsorship-indicator">
           <span className="sponsor-icon">🎁</span>
           <span className="sponsor-text">Gas fees sponsored by ETHCALI</span>
@@ -240,7 +265,13 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
               </div>
             </div>
             <div className="balance-details">
-              <span className="balance-value">{formatTokenBalance(balances.ethBalance, 6)}</span>
+              <div className="balance-amounts">
+                <span className="balance-value">{formatTokenBalance(balances.ethBalance, 6)}</span>
+                <span className="balance-usd">{formatUsd(ethValueUsd)}</span>
+                <span className="price-change" style={{ color: ethPrice.change24h >= 0 ? '#4CAF50' : '#ff6767' }}>
+                  {ethPrice.change24h >= 0 ? '▲' : '▼'} {Math.abs(ethPrice.change24h).toFixed(2)}%
+                </span>
+              </div>
               <Button
                 onClick={() => openSendModal('ETH')}
                 size="small"
@@ -272,7 +303,13 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
               </div>
             </div>
             <div className="balance-details">
-              <span className="balance-value">{formatTokenBalance(balances.uscBalance, 2)}</span>
+              <div className="balance-amounts">
+                <span className="balance-value">{formatTokenBalance(balances.uscBalance, 2)}</span>
+                <span className="balance-usd">{formatUsd(usdcValueUsd)}</span>
+                <span className="price-change" style={{ color: usdcPrice.change24h >= 0 ? '#4CAF50' : '#ff6767' }}>
+                  {usdcPrice.change24h >= 0 ? '▲' : '▼'} {Math.abs(usdcPrice.change24h).toFixed(2)}%
+                </span>
+              </div>
               <Button
                 onClick={() => openSendModal('USDC')}
                 size="small"
@@ -623,10 +660,27 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           gap: 1rem;
         }
         
+        .balance-amounts {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+        
         .balance-value {
           font-weight: 600;
           font-size: 1.1rem;
           color: #333;
+        }
+        
+        .balance-usd {
+          font-size: 0.85rem;
+          color: #666;
+          margin-top: 0.2rem;
+        }
+        
+        .price-change {
+          font-size: 0.8rem;
+          margin-top: 0.2rem;
         }
         
         .send-button {
@@ -725,6 +779,27 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           margin: 0;
           color: #666;
           font-size: 0.9rem;
+        }
+        
+        .total-value {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          background: rgba(75, 102, 243, 0.05);
+          border-radius: 8px;
+          margin-bottom: 1rem;
+        }
+        
+        .total-value-label {
+          font-weight: 500;
+          color: #555;
+        }
+        
+        .total-value-amount {
+          font-weight: 700;
+          font-size: 1.2rem;
+          color: #333;
         }
         
         @media (min-width: 768px) {
