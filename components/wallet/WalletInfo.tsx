@@ -3,6 +3,7 @@ import { Wallet, TokenBalance } from '../../types/index';
 import Button from '../../components/shared/Button';
 import Loading from '../../components/shared/Loading';
 import { getTokenLogoUrl, getNetworkLogoUrl, formatTokenBalance } from '../../utils/tokenUtils';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface WalletInfoProps {
   wallet: Wallet;
@@ -17,6 +18,8 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   isLoading,
   onRefresh
 }) => {
+  const { exportWallet } = usePrivy();
+  
   // Generate QR code URL using a public QR code service
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${wallet.address}`;
   
@@ -26,6 +29,15 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   
   // Get Optimism network logo
   const optimismLogoUrl = getNetworkLogoUrl(10); // 10 is Optimism Mainnet chain ID
+  
+  // Handle export wallet button click
+  const handleExportWallet = async () => {
+    try {
+      await exportWallet({ address: wallet.address });
+    } catch (error) {
+      console.error("Error exporting wallet:", error);
+    }
+  };
   
   return (
     <div className="wallet-info">
@@ -58,6 +70,16 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           >
             View on Optimism Explorer
           </a>
+          <div className="wallet-actions">
+            <Button 
+              onClick={handleExportWallet}
+              size="small" 
+              variant="secondary"
+              className="export-button"
+            >
+              Export Wallet
+            </Button>
+          </div>
         </div>
       </div>
       
@@ -172,6 +194,15 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         .address-details {
           width: 100%;
         }
+
+        .wallet-actions {
+          margin-top: 0.5rem;
+          margin-bottom: 1rem;
+        }
+        
+        .export-button {
+          width: 100%;
+        }
         
         .balances-header {
           display: flex;
@@ -198,7 +229,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           display: inline-block;
           color: #4B66F3;
           text-decoration: underline;
-          margin-bottom: 1rem;
+          margin-bottom: 0.5rem;
         }
         
         .balances {
