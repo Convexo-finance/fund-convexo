@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #676FFF;
+  --primary-color: #4B66F3;
   --secondary-color: #333333;
   --background-color: #ffffff;
   --card-background: #f9f9f9;
@@ -13,10 +13,12 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background-color: var(--background-color);
   color: var(--secondary-color);
+  line-height: 1.6;
+  font-size: 16px;
 }
 
 a {
@@ -28,9 +30,21 @@ a {
   box-sizing: border-box;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
 button {
   transition: opacity var(--transition-speed), transform var(--transition-speed);
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
 }
 
 button:hover {
@@ -72,13 +86,14 @@ input {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(103, 111, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(75, 102, 243, 0.2);
 }
 
 /* Privy specific overrides */
@@ -90,4 +105,5 @@ input:focus {
   border: none;
   cursor: pointer;
   font-weight: 500;
+  font-family: 'Inter', sans-serif;
 } 

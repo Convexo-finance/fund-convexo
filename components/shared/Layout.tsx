@@ -10,8 +10,12 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
   title = 'ETH CALI Wallet', 
-  description = 'Secure Ethereum wallet with gas sponsorship by ETH CALI' 
+  description = 'A secure and easy-to-use Ethereum wallet to get into web3 easily. Fully open-sourced with gas fees sponsored by ETH CALI.' 
 }) => {
+  // Define the site URL and image paths for metadata
+  const siteUrl = 'https://papayapp.vercel.app';
+  const imageUrl = `${siteUrl}/banner_ethcali.jpg`;
+  
   return (
     <div className="layout">
       <Head>
@@ -19,6 +23,24 @@ const Layout: React.FC<LayoutProps> = ({
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={siteUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={imageUrl} />
+        
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={siteUrl} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:image" content={imageUrl} />
+        
+        {/* Additional SEO metadata */}
+        <meta name="keywords" content="ethereum, wallet, crypto, blockchain, web3, optimism, ETHCALI" />
+        <meta name="author" content="ETH CALI" />
       </Head>
 
       <header className="header">
