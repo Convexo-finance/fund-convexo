@@ -9,8 +9,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
-  title = 'Papayapp', 
-  description = 'Secure Ethereum wallet with phone and email authentication' 
+  title = 'ETH CALI Wallet', 
+  description = 'Secure Ethereum wallet with gas sponsorship by ETH CALI' 
 }) => {
   return (
     <div className="layout">
@@ -22,10 +22,10 @@ const Layout: React.FC<LayoutProps> = ({
       </Head>
 
       <header className="header">
-        <div className="logo-container">
-          <img src="/logo_eth_cali.png" alt="Papayapp Logo" className="logo" />
+        <div className="banner-container">
+          <img src="/logo_eth_cali_blanco.png" alt="ETH CALI Logo" className="logo" />
+          <h1>{title}</h1>
         </div>
-        <h1>{title}</h1>
       </header>
 
       <main className="main">
@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({
       </main>
 
       <footer className="footer">
-        <p>Powered by ETH Cali</p>
+        <p>Powered by ETH CALI</p>
       </footer>
 
       <style jsx>{`
@@ -42,27 +42,54 @@ const Layout: React.FC<LayoutProps> = ({
           display: flex;
           flex-direction: column;
           width: 100%;
+          background-color: #f8f9fa;
+          position: relative;
         }
         
         .header {
-          padding: 1.5rem 1rem;
+          padding: 2rem 1rem;
           text-align: center;
-          border-bottom: 1px solid #eee;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          background-image: url('/banner_ethcali.jpg');
+          background-size: cover;
+          background-position: center;
+          position: relative;
+          z-index: 1;
         }
         
-        .logo-container {
-          margin-bottom: 0.5rem;
+        .header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(rgba(0, 0, 51, 0.75), rgba(0, 0, 51, 0.85));
+          z-index: -1;
+        }
+        
+        .banner-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          z-index: 1;
+          padding: 1.5rem 0;
         }
         
         .logo {
-          width: 100px;
+          width: 150px;
           height: auto;
+          margin-bottom: 1rem;
+          filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
         }
         
         h1 {
           margin: 0;
-          font-size: 1.5rem;
-          color: #333;
+          font-size: 1.75rem;
+          color: #ffffff;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
         
         .main {
@@ -71,14 +98,75 @@ const Layout: React.FC<LayoutProps> = ({
           width: 100%;
           max-width: 800px;
           margin: 0 auto;
+          position: relative;
+          z-index: 1;
+          background-color: rgba(255, 255, 255, 0.95);
+          border-radius: 8px;
+          margin-top: 1.5rem;
+          margin-bottom: 1.5rem;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .footer {
           padding: 1.5rem 1rem;
           text-align: center;
-          border-top: 1px solid #eee;
+          border-top: 1px solid rgba(0, 0, 51, 0.1);
           font-size: 0.875rem;
-          color: #666;
+          color: rgba(255, 255, 255, 0.9);
+          background-color: rgba(0, 0, 51, 0.9);
+          position: relative;
+          z-index: 1;
+        }
+        
+        /* Responsive styling for mobile devices */
+        @media (max-width: 768px) {
+          .main {
+            padding: 1rem;
+            margin: 1rem;
+            width: calc(100% - 2rem);
+          }
+          
+          .logo {
+            width: 120px;
+          }
+          
+          h1 {
+            font-size: 1.5rem;
+          }
+          
+          .banner-container {
+            padding: 1rem 0;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .header {
+            padding: 1.5rem 0.5rem;
+          }
+          
+          .main {
+            padding: 0.75rem;
+            margin: 0.75rem;
+            width: calc(100% - 1.5rem);
+          }
+          
+          .logo {
+            width: 100px;
+            margin-bottom: 0.75rem;
+          }
+          
+          h1 {
+            font-size: 1.2rem;
+          }
+          
+          .footer {
+            padding: 1rem 0.5rem;
+            font-size: 0.8rem;
+          }
+          
+          .banner-container {
+            padding: 0.75rem 0;
+          }
         }
       `}</style>
     </div>

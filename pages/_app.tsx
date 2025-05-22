@@ -11,8 +11,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Papayapp - Web3 Wallet</title>
-        <meta name="description" content="Login with phone or email and access your Ethereum wallet" />
+        <title>ETH CALI - Web3 Wallet</title>
+        <meta name="description" content="Secure Ethereum wallet with gas sponsorship by ETH CALI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -29,6 +29,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             createOnLogin: 'all-users',
             showWalletUIs: true
           }
+          // Smart wallets are now configured directly in the Privy Dashboard
+          // https://console.privy.io/ -> Smart Wallets section
         }}
       >
         <SmartWalletsProvider>

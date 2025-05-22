@@ -12,7 +12,7 @@ import { sendSmartAccountTransaction } from '../utils/smartAccountHelper';
 export default function Home() {
   const { login, ready, authenticated, user, logout } = usePrivy();
   const { wallets } = useWallets();
-  const { client, smartAccountAddress, isLoading: isSmartWalletLoading } = useSmartWallets();
+  const { smartAccountAddress, isLoading: isSmartWalletLoading, sendTransaction } = useSmartWallets();
   const [smartWalletTxHash, setSmartWalletTxHash] = useState<string>('');
   const [isSendingTx, setIsSendingTx] = useState<boolean>(false);
 
@@ -28,15 +28,15 @@ export default function Home() {
 
   // Send a test transaction via the smart wallet
   const sendSmartWalletTransaction = async () => {
-    if (!client || !smartAccountAddress) {
-      console.error("Smart wallet client not available");
+    if (!smartAccountAddress) {
+      console.error("Smart wallet not available");
       return;
     }
 
     setIsSendingTx(true);
     try {
-      // Use our helper function to avoid chain property issues
-      const hash = await sendSmartAccountTransaction(client, {
+      // Use the sendTransaction function from context
+      const hash = await sendTransaction({
         to: smartAccountAddress as `0x${string}`,
         value: BigInt(0),
         data: '0x'
@@ -51,7 +51,7 @@ export default function Home() {
 
   // Show loading state while Privy initializes
   if (!ready) {
-    return <Loading fullScreen={true} text="Loading Papayapp..." />;
+    return <Loading fullScreen={true} text="Loading ETH CALI Wallet..." />;
   }
 
   return (
@@ -59,7 +59,7 @@ export default function Home() {
       {!authenticated ? (
         // Login view
         <div className="login-section">
-          <h2>Welcome to Papayapp</h2>
+          <h2>Welcome to ETH CALI Wallet</h2>
           <p>Login with email or phone to access your wallet</p>
           <Button 
             onClick={login} 
@@ -146,41 +146,53 @@ export default function Home() {
         .login-section {
           text-align: center;
           margin: 3rem 0;
-          padding: 2rem;
-          background: #f5f5f5;
+          padding: 2.5rem;
+          background: rgba(255, 255, 255, 0.98);
           border-radius: 8px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
         
         h2 {
-          margin-bottom: 1rem;
-          color: #444;
+          margin-bottom: 1.5rem;
+          color: #333;
+          font-weight: 600;
         }
         
         h3 {
           margin-bottom: 1rem;
-          color: #555;
+          color: #444;
           font-size: 1.2rem;
+          font-weight: 600;
         }
         
         .user-info {
           color: #666;
           margin-bottom: 1.5rem;
+          font-size: 0.95rem;
         }
         
         .loading-wallet {
           text-align: center;
           margin: 2rem 0;
           padding: 1.5rem;
-          background: #f5f5f5;
+          background: rgba(255, 255, 255, 0.98);
           border-radius: 8px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
         
         .wallet-card {
           margin-bottom: 2rem;
           padding: 1.5rem;
-          background: #f9f9f9;
+          background: rgba(255, 255, 255, 0.98);
           border-radius: 8px;
           border: 1px solid #eee;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .wallet-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
         
         .smart-wallet-info {
@@ -218,6 +230,51 @@ export default function Home() {
         .logout-section {
           text-align: center;
           margin-top: 2rem;
+        }
+        
+        /* Responsive styling for mobile devices */
+        @media (max-width: 768px) {
+          .wallet-card {
+            padding: 1.25rem;
+          }
+          
+          h2 {
+            font-size: 1.5rem;
+          }
+          
+          h3 {
+            font-size: 1.1rem;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .login-section {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+          }
+          
+          .wallet-card {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+          }
+          
+          h2 {
+            font-size: 1.4rem;
+          }
+          
+          h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+          }
+          
+          .transaction-info {
+            padding: 0.75rem;
+          }
+          
+          .tx-hash {
+            font-size: 0.8rem;
+            padding: 0.375rem;
+          }
         }
       `}</style>
     </Layout>

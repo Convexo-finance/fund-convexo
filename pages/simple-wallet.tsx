@@ -11,7 +11,7 @@ export default function SimpleWallet() {
 
   return (
     <div className="container">
-      <Loading fullScreen={true} text="Redirecting to Papayapp..." />
+      <Loading fullScreen={true} text="Redirecting to ETH CALI Wallet..." />
       
       <style jsx>{`
         .container {

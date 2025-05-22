@@ -4,7 +4,7 @@ import { optimism } from 'viem/chains';
 import { TokenBalance } from '../types/index';
 
 // USDC contract address on Optimism
-const USDC_ADDRESS = '0x7F5c764cBc14f9669B88837ca1490cCa17c31607';
+const USDC_ADDRESS = '0x0b2c639c533813f4aa9d7837caf62653d097ff85';
 
 // Simple ABI for ERC20 balanceOf function
 const ERC20_ABI = [

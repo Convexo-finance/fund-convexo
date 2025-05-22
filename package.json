@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@permissionless/wagmi": "0.1.4",
     "@privy-io/react-auth": "2.13.2",
     "@types/node": "^20.11.0",
     "@types/react": "18.2.48",
