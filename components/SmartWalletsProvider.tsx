@@ -1,13 +1,7 @@
 import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
 // Import from privy but don't use wallet functionality yet
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { createPublicClient, http } from 'viem';
-import { optimism, base } from 'viem/chains';
-import { createSmartAccountClient } from 'permissionless';
-import { toSafeSmartAccount } from 'permissionless/accounts';
-
-// Define Entry Point address for ERC-4337 (EntryPoint v0.7)
-const entryPoint07Address = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789' as const;
+import { optimism } from 'viem/chains';
 
 // Define the type for the context
 interface SmartWalletsContextType {

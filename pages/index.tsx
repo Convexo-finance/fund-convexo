@@ -7,7 +7,6 @@ import WalletInfo from '../components/wallet/WalletInfo';
 import { TokenBalance, Wallet } from '../types/index';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { useSmartWallets } from '../components/SmartWalletsProvider';
-import { sendSmartAccountTransaction } from '../utils/smartAccountHelper';
 
 export default function Home() {
   const { login, ready, authenticated, user, logout } = usePrivy();
