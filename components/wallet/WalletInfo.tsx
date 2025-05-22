@@ -371,7 +371,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
       
       <style jsx>{`
         .wallet-info {
-          background: #f5f5f5;
+          background: var(--bg-secondary);
           padding: 1.5rem;
           border-radius: 8px;
           margin-top: 1rem;
@@ -404,7 +404,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         h3 {
           margin: 0 0 1rem 0;
-          color: #333;
+          color: var(--text-color);
         }
         
         .wallet-address-container {
@@ -412,10 +412,10 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           flex-direction: column;
           align-items: center;
           margin-bottom: 1.5rem;
-          background: white;
+          background: var(--card-bg);
           border-radius: 12px;
-          border: 1px solid #eee;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          border: 1px solid var(--card-border);
+          box-shadow: 0 1px 3px var(--card-shadow);
           padding: 1.5rem;
         }
         
@@ -430,8 +430,8 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           background: white;
           padding: 10px;
           border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          border: 1px solid #eee;
+          box-shadow: 0 2px 8px var(--card-shadow);
+          border: 1px solid var(--card-border);
         }
         
         .qr-code img {
@@ -443,7 +443,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         .qr-help {
           margin: 0.5rem 0 0 0;
           font-size: 0.85rem;
-          color: #888;
+          color: var(--text-tertiary);
         }
         
         .address-details {
@@ -459,7 +459,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .address-header h4 {
           margin: 0;
-          color: #333;
+          color: var(--text-color);
         }
         
         .export-button {
@@ -479,10 +479,10 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           position: relative;
           display: flex;
           align-items: center;
-          background: #f8f9fa;
+          background: var(--bg-tertiary);
           padding: 0.75rem 1rem;
           border-radius: 8px;
-          border: 1px solid #e8e8e8;
+          border: 1px solid var(--card-border);
           margin-bottom: 0.75rem;
         }
         
@@ -491,7 +491,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           font-family: monospace;
           overflow-wrap: break-word;
           font-size: 0.9rem;
-          color: #333;
+          color: var(--text-color);
           user-select: all;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -506,12 +506,12 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #555;
+          color: var(--text-secondary);
           transition: background-color 0.2s;
         }
         
         .copy-button:hover {
-          background-color: rgba(0, 0, 0, 0.05);
+          background-color: var(--toggle-hover-bg);
         }
         
         .copy-icon {
@@ -527,7 +527,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           display: inline-flex;
           align-items: center;
           gap: 0.375rem;
-          color: #4B66F3;
+          color: var(--primary-color);
           text-decoration: none;
           font-size: 0.85rem;
           padding: 0.25rem 0;
@@ -556,7 +556,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .balances-header h3 {
           margin: 0;
-          color: #333;
+          color: var(--text-color);
         }
         
         .gas-sponsorship-indicator {
@@ -575,7 +575,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .sponsor-text {
           font-size: 0.9rem;
-          color: #4B66F3;
+          color: var(--primary-color);
           font-weight: 500;
         }
         
@@ -584,7 +584,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           justify-content: flex-end;
           margin-bottom: 1rem;
           font-size: 0.8rem;
-          color: #888;
+          color: var(--text-tertiary);
         }
         
         .powered-text {
@@ -603,16 +603,16 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           justify-content: space-between;
           align-items: center;
           padding: 1rem;
-          background: white;
+          background: var(--card-bg);
           border-radius: 12px;
-          border: 1px solid #eee;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          border: 1px solid var(--card-border);
+          box-shadow: 0 1px 3px var(--card-shadow);
           transition: transform 0.2s, box-shadow 0.2s;
         }
         
         .balance-card:hover {
           transform: translateY(-2px);
-          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 3px 6px var(--card-shadow);
         }
         
         .token-info {
@@ -625,11 +625,11 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           width: 40px;
           height: 40px;
           border-radius: 50%;
-          background-color: #f7f7f7;
+          background-color: var(--bg-tertiary);
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 1px 3px var(--card-shadow);
         }
         
         .token-icon {
@@ -646,12 +646,12 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .token-name {
           font-weight: 500;
-          color: #333;
+          color: var(--text-color);
         }
         
         .token-symbol {
           font-size: 0.8rem;
-          color: #666;
+          color: var(--text-secondary);
         }
         
         .balance-details {
@@ -669,12 +669,12 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         .balance-value {
           font-weight: 600;
           font-size: 1.1rem;
-          color: #333;
+          color: var(--text-color);
         }
         
         .balance-usd {
           font-size: 0.85rem;
-          color: #666;
+          color: var(--text-secondary);
           margin-top: 0.2rem;
         }
         
@@ -702,7 +702,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           border-radius: 12px;
           border: 1px solid #c5e8d1;
           overflow: hidden;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 1px 3px var(--card-shadow);
         }
         
         .receipt-header {
@@ -746,16 +746,16 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .tx-label {
           font-weight: 500;
-          color: #444;
+          color: var(--text-color);
           font-size: 0.9rem;
         }
         
         .tx-hash {
           font-family: monospace;
-          background: rgba(0, 0, 0, 0.05);
+          background: var(--bg-tertiary);
           padding: 0.25rem 0.5rem;
           border-radius: 4px;
-          color: #555;
+          color: var(--text-color);
           font-size: 0.9rem;
         }
         
@@ -777,7 +777,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .receipt-info {
           margin: 0;
-          color: #666;
+          color: var(--text-secondary);
           font-size: 0.9rem;
         }
         
@@ -793,13 +793,13 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         
         .total-value-label {
           font-weight: 500;
-          color: #555;
+          color: var(--text-secondary);
         }
         
         .total-value-amount {
           font-weight: 700;
           font-size: 1.2rem;
-          color: #333;
+          color: var(--text-color);
         }
         
         @media (min-width: 768px) {

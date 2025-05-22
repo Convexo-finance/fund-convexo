@@ -46,20 +46,21 @@ const Loading: React.FC<LoadingProps> = ({
           position: fixed;
           top: 0;
           left: 0;
-          background-color: rgba(255, 255, 255, 0.9);
+          background-color: var(--bg-primary);
+          opacity: 0.9;
           z-index: 1000;
         }
         
         .loading-spinner {
-          border: 4px solid rgba(0, 0, 0, 0.1);
-          border-left: 4px solid #4B66F3;
+          border: 4px solid var(--card-border);
+          border-left: 4px solid var(--primary-color);
           border-radius: 50%;
           animation: spin 1s linear infinite;
           margin-bottom: 1rem;
         }
         
         .loading-text {
-          color: #555;
+          color: var(--text-secondary);
           font-size: ${size === 'small' ? '0.85rem' : size === 'large' ? '1.2rem' : '1rem'};
           margin: 0;
         }

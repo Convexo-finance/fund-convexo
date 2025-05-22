@@ -3,6 +3,7 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 import SmartWalletsProvider from '@/components/SmartWalletsProvider';
+import { ThemeProvider } from '../context/ThemeContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   // App ID from the Privy Dashboard (using environment variable)
@@ -15,12 +16,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   const imageUrl = `${siteUrl}/banner_ethcali.jpg`;
 
   return (
-    <>
+    <ThemeProvider>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/1x1ethcali.png" type="image/png" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
@@ -61,7 +62,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </SmartWalletsProvider>
       </PrivyProvider>
-    </>
+    </ThemeProvider>
   );
 }
 

@@ -146,52 +146,58 @@ export default function Home() {
           text-align: center;
           margin: 3rem 0;
           padding: 2.5rem;
-          background: rgba(255, 255, 255, 0.98);
+          background: var(--card-bg);
           border-radius: 8px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 15px var(--card-shadow);
         }
         
         h2 {
           margin-bottom: 1.5rem;
-          color: #333;
+          color: var(--text-color);
           font-weight: 600;
         }
         
         h3 {
           margin-bottom: 1rem;
-          color: #444;
+          color: var(--text-color);
           font-size: 1.2rem;
           font-weight: 600;
         }
         
         .user-info {
-          color: #666;
+          color: var(--text-secondary);
           margin-bottom: 1.5rem;
           font-size: 0.95rem;
+        }
+        
+        /* Dark mode override for Welcome back and user info */
+        [data-theme="dark"] h2, 
+        [data-theme="dark"] .user-info {
+          color: white;
         }
         
         .loading-wallet {
           text-align: center;
           margin: 2rem 0;
           padding: 1.5rem;
-          background: rgba(255, 255, 255, 0.98);
+          background: var(--card-bg);
           border-radius: 8px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 15px var(--card-shadow);
         }
         
         .wallet-card {
           margin-bottom: 2rem;
           padding: 1.5rem;
-          background: rgba(255, 255, 255, 0.98);
+          background: var(--card-bg);
           border-radius: 8px;
-          border: 1px solid #eee;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+          border: 1px solid var(--card-border);
+          box-shadow: 0 2px 10px var(--card-shadow);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
         .wallet-card:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 15px var(--card-shadow);
         }
         
         .smart-wallet-info {
@@ -205,7 +211,7 @@ export default function Home() {
         .transaction-info {
           margin-top: 1rem;
           padding: 1rem;
-          background: #f0f0f0;
+          background: var(--bg-tertiary);
           border-radius: 4px;
         }
         
@@ -215,14 +221,14 @@ export default function Home() {
           font-size: 0.9rem;
           margin: 0.5rem 0;
           padding: 0.5rem;
-          background: #e8e8e8;
+          background: var(--bg-secondary);
           border-radius: 4px;
         }
         
         .block-explorer-link {
           display: inline-block;
           margin-top: 0.5rem;
-          color: #4B66F3;
+          color: var(--primary-color);
           text-decoration: underline;
         }
         

@@ -36,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
   // Define variant styles
   const variantStyles = {
     primary: `
-      background-color: #4B66F3;
+      background-color: var(--primary-color);
       color: white;
       border: none;
       &:hover:not(:disabled) {
@@ -44,17 +44,17 @@ const Button: React.FC<ButtonProps> = ({
       }
     `,
     secondary: `
-      background-color: #f5f5f5;
-      color: #333;
-      border: 1px solid #ddd;
+      background-color: var(--bg-secondary);
+      color: var(--text-color);
+      border: 1px solid var(--card-border);
       &:hover:not(:disabled) {
-        background-color: #e5e5e5;
+        background-color: var(--bg-tertiary);
       }
     `,
     outline: `
       background-color: transparent;
-      color: #4B66F3;
-      border: 1px solid #4B66F3;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
       &:hover:not(:disabled) {
         background-color: rgba(75, 102, 243, 0.1);
       }

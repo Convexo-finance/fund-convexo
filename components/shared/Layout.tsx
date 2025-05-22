@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import ThemeToggle from './ThemeToggle';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/1x1ethcali.png" type="image/png" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
@@ -45,6 +46,9 @@ const Layout: React.FC<LayoutProps> = ({
 
       <header className="header">
         <div className="banner-container">
+          <div className="theme-toggle-container">
+            <ThemeToggle />
+          </div>
           <img src="/logo_eth_cali_blanco.png" alt="ETH CALI Logo" className="logo" />
           <h1>{title}</h1>
         </div>
@@ -64,30 +68,18 @@ const Layout: React.FC<LayoutProps> = ({
           display: flex;
           flex-direction: column;
           width: 100%;
-          background-color: #f8f9fa;
+          background-color: var(--bg-primary);
           position: relative;
+          transition: background-color 0.3s ease;
         }
         
         .header {
           padding: 2rem 1rem;
           text-align: center;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          background-image: url('/banner_ethcali.jpg');
-          background-size: cover;
-          background-position: center;
+          background-color: var(--header-bg);
           position: relative;
           z-index: 1;
-        }
-        
-        .header::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(rgba(0, 0, 51, 0.75), rgba(0, 0, 51, 0.85));
-          z-index: -1;
         }
         
         .banner-container {
@@ -98,6 +90,12 @@ const Layout: React.FC<LayoutProps> = ({
           position: relative;
           z-index: 1;
           padding: 1.5rem 0;
+        }
+        
+        .theme-toggle-container {
+          position: absolute;
+          top: 0;
+          right: 0;
         }
         
         .logo {
@@ -122,20 +120,21 @@ const Layout: React.FC<LayoutProps> = ({
           margin: 0 auto;
           position: relative;
           z-index: 1;
-          background-color: rgba(255, 255, 255, 0.95);
+          background-color: var(--card-bg);
           border-radius: 8px;
           margin-top: 1.5rem;
           margin-bottom: 1.5rem;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 15px var(--card-shadow);
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         
         .footer {
           padding: 1.5rem 1rem;
           text-align: center;
-          border-top: 1px solid rgba(0, 0, 51, 0.1);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
           font-size: 0.875rem;
           color: rgba(255, 255, 255, 0.9);
-          background-color: rgba(0, 0, 51, 0.9);
+          background-color: var(--header-bg);
           position: relative;
           z-index: 1;
         }

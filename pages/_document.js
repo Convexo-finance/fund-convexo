@@ -11,7 +11,8 @@ class MyDocument extends Document {
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <link rel="manifest" href="/manifest.json" />
-          <meta name="theme-color" content="#676FFF" />
+          <link rel="icon" href="/1x1ethcali.png" type="image/png" />
+          <meta name="theme-color" content="#000000" />
         </Head>
         <body>
           <Main />
