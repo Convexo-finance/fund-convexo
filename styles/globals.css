@@ -1,127 +1,136 @@
-:root {
-  /* Light Mode Variables */
-  --primary-color: #4B66F3;
-  --secondary-color: #333333;
-  --background-color: #ffffff;
-  --card-background: #f9f9f9;
-  --error-color: #ff6767;
-  --success-color: #4CAF50;
-  --border-radius: 8px;
-  --transition-speed: 0.3s;
-  
-  /* Common Variables */
-  --border-radius: 8px;
-  --transition-speed: 0.3s;
-  
-  /* Text Colors */
-  --text-color: #333333;
-  --text-secondary: #666666;
-  --text-tertiary: #888888;
-  
-  /* Background Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f5;
-  --bg-tertiary: #f8f9fa;
-  --header-bg: #000000;
-  
-  /* Card & Container Colors */
-  --card-bg: #ffffff;
-  --card-border: #eeeeee;
-  --card-shadow: rgba(0, 0, 0, 0.05);
-  
-  /* Input & Form Colors */
-  --input-bg: #ffffff;
-  --input-border: #dddddd;
-  --input-focus-shadow: rgba(75, 102, 243, 0.2);
-  
-  /* Toggle Button Colors */
-  --toggle-bg: #f0f0f0;
-  --toggle-hover-bg: #e5e5e5;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light Mode Variables */
+    --primary-color: #4B66F3;
+    --secondary-color: #333333;
+    --background-color: #ffffff;
+    --card-background: #f9f9f9;
+    --error-color: #ff6767;
+    --success-color: #4CAF50;
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+    
+    /* Text Colors */
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --text-tertiary: #888888;
+    
+    /* Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #f8f9fa;
+    --header-bg: #000000;
+    
+    /* Card & Container Colors */
+    --card-bg: #ffffff;
+    --card-border: #eeeeee;
+    --card-shadow: rgba(0, 0, 0, 0.05);
+    
+    /* Input & Form Colors */
+    --input-bg: #ffffff;
+    --input-border: #dddddd;
+    --input-focus-shadow: rgba(75, 102, 243, 0.2);
+    
+    /* Toggle Button Colors */
+    --toggle-bg: #f0f0f0;
+    --toggle-hover-bg: #e5e5e5;
+  }
+
+  /* Dark Mode Theme */
+  .dark {
+    /* Text Colors */
+    --text-color: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #909090;
+    
+    /* Background Colors */
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-tertiary: #252525;
+    --header-bg: #000000;
+    
+    /* Card & Container Colors */
+    --card-bg: #1e1e1e;
+    --card-border: #333333;
+    --card-shadow: rgba(0, 0, 0, 0.2);
+    
+    /* Input & Form Colors */
+    --input-bg: #252525;
+    --input-border: #444444;
+    --input-focus-shadow: rgba(75, 102, 243, 0.3);
+    
+    /* Toggle Button Colors */
+    --toggle-bg: #333333;
+    --toggle-hover-bg: #444444;
+    
+    /* Overrides for component-specific colors */
+    --primary-color: #6B86FF; /* Brighter in dark mode */
+    --secondary-color: #e0e0e0;
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+  }
+
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-color);
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+  }
+
+  button {
+    transition: opacity var(--transition-speed), transform var(--transition-speed);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+
+  button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  button:active {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
 }
 
-/* Dark Mode Theme */
-[data-theme="dark"] {
-  /* Text Colors */
-  --text-color: #e0e0e0;
-  --text-secondary: #b0b0b0;
-  --text-tertiary: #909090;
-  
-  /* Background Colors */
-  --bg-primary: #121212;
-  --bg-secondary: #1e1e1e;
-  --bg-tertiary: #252525;
-  --header-bg: #000000;
-  
-  /* Card & Container Colors */
-  --card-bg: #1e1e1e;
-  --card-border: #333333;
-  --card-shadow: rgba(0, 0, 0, 0.2);
-  
-  /* Input & Form Colors */
-  --input-bg: #252525;
-  --input-border: #444444;
-  --input-focus-shadow: rgba(75, 102, 243, 0.3);
-  
-  /* Toggle Button Colors */
-  --toggle-bg: #333333;
-  --toggle-hover-bg: #444444;
-  
-  /* Overrides for component-specific colors */
-  --primary-color: #6B86FF; /* Brighter in dark mode */
-  --secondary-color: #e0e0e0;
-  --background-color: #121212;
-  --card-background: #1e1e1e;
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  background-color: var(--bg-primary);
-  color: var(--text-color);
-  line-height: 1.6;
-  font-size: 16px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--text-color);
-}
-
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: var(--text-secondary);
-}
-
-button {
-  transition: opacity var(--transition-speed), transform var(--transition-speed);
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-}
-
-button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-button:active {
-  opacity: 0.8;
-  transform: translateY(0);
+@layer components {
+  /* Privy specific overrides */
+  .privy-login-button {
+    @apply py-2.5 px-4 rounded bg-blue-600 text-white border-none cursor-pointer font-medium font-sans;
+  }
 }
 
 /* Root container styles */
@@ -164,16 +173,4 @@ input:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px var(--input-focus-shadow);
-}
-
-/* Privy specific overrides */
-.privy-login-button {
-  padding: 10px 15px;
-  border-radius: 4px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  font-family: 'Inter', sans-serif;
 } 

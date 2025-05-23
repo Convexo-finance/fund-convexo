@@ -14,13 +14,16 @@
     "@types/react": "18.2.48",
     "@types/react-dom": "^18.2.18",
     "next": "14.1.0",
-    "permissionless": "0.0.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-qr-reader": "3.0.0-beta-1",
     "typescript": "5.3.3",
     "viem": "1.19.9"
   },
   "devDependencies": {
+    "autoprefixer": "10.4.21",
+    "postcss": "8.5.3",
+    "tailwindcss": "3.4.17",
     "vercel": "^32.5.3"
   },
   "engines": {
@@ -28,7 +31,6 @@
     "npm": ">=8.x"
   },
   "resolutions": {
-    "permissionless": "0.0.19",
     "viem": "1.19.9"
   }
 }

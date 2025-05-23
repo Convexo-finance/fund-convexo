@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({
   const imageUrl = `${siteUrl}/banner_ethcali.jpg`;
   
   return (
-    <div className="layout">
+    <div className="min-h-screen flex flex-col w-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -44,152 +44,29 @@ const Layout: React.FC<LayoutProps> = ({
         <meta name="author" content="ETH CALI" />
       </Head>
 
-      <header className="header">
-        <div className="banner-container">
-          <div className="theme-toggle-container">
+      <header className="py-8 px-4 text-center border-b border-gray-200 dark:border-gray-800 bg-black relative z-10">
+        <div className="relative py-6 flex flex-col items-center">
+          <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <img src="/logo_eth_cali_blanco.png" alt="ETH CALI Logo" className="logo" />
-          <h1>{title}</h1>
+          <img 
+            src="/logo_eth_cali_blanco.png" 
+            alt="ETH CALI Logo" 
+            className="w-36 h-auto mb-4 filter drop-shadow-md md:w-40"
+          />
+          <h1 className="text-white text-xl font-semibold text-shadow-sm md:text-2xl">{title}</h1>
         </div>
       </header>
 
-      <main className="main">
-        {children}
+      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 md:p-6 transition-colors duration-300">
+          {children}
+        </div>
       </main>
 
-      <footer className="footer">
-        <p>Powered by ETH CALI</p>
+      <footer className="py-6 px-4 text-center border-t border-gray-200 dark:border-gray-800 bg-black text-white text-sm">
+        <p className="opacity-90">Powered by ETH CALI</p>
       </footer>
-
-      <style jsx>{`
-        .layout {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          background-color: var(--bg-primary);
-          position: relative;
-          transition: background-color 0.3s ease;
-        }
-        
-        .header {
-          padding: 2rem 1rem;
-          text-align: center;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          background-color: var(--header-bg);
-          position: relative;
-          z-index: 1;
-        }
-        
-        .banner-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          z-index: 1;
-          padding: 1.5rem 0;
-        }
-        
-        .theme-toggle-container {
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
-        
-        .logo {
-          width: 150px;
-          height: auto;
-          margin-bottom: 1rem;
-          filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
-        }
-        
-        h1 {
-          margin: 0;
-          font-size: 1.75rem;
-          color: #ffffff;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .main {
-          flex: 1;
-          padding: 1.5rem 1rem;
-          width: 100%;
-          max-width: 800px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 1;
-          background-color: var(--card-bg);
-          border-radius: 8px;
-          margin-top: 1.5rem;
-          margin-bottom: 1.5rem;
-          box-shadow: 0 4px 15px var(--card-shadow);
-          transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .footer {
-          padding: 1.5rem 1rem;
-          text-align: center;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          font-size: 0.875rem;
-          color: rgba(255, 255, 255, 0.9);
-          background-color: var(--header-bg);
-          position: relative;
-          z-index: 1;
-        }
-        
-        /* Responsive styling for mobile devices */
-        @media (max-width: 768px) {
-          .main {
-            padding: 1rem;
-            margin: 1rem;
-            width: calc(100% - 2rem);
-          }
-          
-          .logo {
-            width: 120px;
-          }
-          
-          h1 {
-            font-size: 1.5rem;
-          }
-          
-          .banner-container {
-            padding: 1rem 0;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .header {
-            padding: 1.5rem 0.5rem;
-          }
-          
-          .main {
-            padding: 0.75rem;
-            margin: 0.75rem;
-            width: calc(100% - 1.5rem);
-          }
-          
-          .logo {
-            width: 100px;
-            margin-bottom: 0.75rem;
-          }
-          
-          h1 {
-            font-size: 1.2rem;
-          }
-          
-          .footer {
-            padding: 1rem 0.5rem;
-            font-size: 0.8rem;
-          }
-          
-          .banner-container {
-            padding: 0.75rem 0;
-          }
-        }
-      `}</style>
     </div>
   );
 };

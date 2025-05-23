@@ -5,6 +5,7 @@ import Loading from '../../components/shared/Loading';
 import { getTokenLogoUrl, getNetworkLogoUrl, formatTokenBalance } from '../../utils/tokenUtils';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import SendTokenModal from './SendTokenModal';
+import QRScanner from './QRScanner';
 import { parseUnits, encodeFunctionData } from 'viem';
 import { useTokenPrices } from '../../hooks/useTokenPrices';
 
@@ -30,6 +31,10 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   const [selectedToken, setSelectedToken] = useState<'ETH' | 'USDC'>('ETH');
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  
+  // New state for QR scanner
+  const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
+  const [scannedAddress, setScannedAddress] = useState<string | null>(null);
   
   // Get the actual wallet instance from Privy's useWallets hook
   const privyWallet = wallets?.find(w => w.address.toLowerCase() === wallet.address.toLowerCase());
@@ -163,6 +168,21 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
     }
   };
   
+  // Handle QR code scan result
+  const handleQRScan = (address: string) => {
+    setScannedAddress(address);
+    setIsQRScannerOpen(false);
+    
+    // Open send modal with the scanned address
+    setSelectedToken('ETH'); // Default to ETH
+    setIsSendModalOpen(true);
+  };
+  
+  // Open QR scanner
+  const openQRScanner = () => {
+    setIsQRScannerOpen(true);
+  };
+  
   return (
     <div className="wallet-info">
       <div className="network-indicator">
@@ -198,140 +218,109 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
               Export Wallet
             </Button>
           </div>
-          <div className="address-box">
-            <code className="address">{wallet.address}</code>
-            <button 
-              className="copy-button" 
-              onClick={() => {
-                navigator.clipboard.writeText(wallet.address);
-                // You could add a temporary "Copied!" notification here
-              }}
-              title="Copy address"
-            >
-              <span className="copy-icon">📋</span>
-            </button>
-          </div>
-          <div className="address-actions">
-            <a 
-              href={`https://optimistic.etherscan.io/address/${wallet.address}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="explorer-link"
-            >
-              <span className="link-icon">🔍</span>
-              View on Optimism Explorer
-            </a>
+          
+          <div className="address-display">
+            <p className="wallet-address">{wallet.address}</p>
+            <div className="address-actions">
+              <button 
+                className="copy-button"
+                onClick={() => {
+                  navigator.clipboard.writeText(wallet.address);
+                  // Show copy success message (you could add a state for this)
+                }}
+              >
+                📋 Copy
+              </button>
+              <a 
+                href={`https://optimistic.etherscan.io/address/${wallet.address}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="view-button"
+              >
+                🔍 View
+              </a>
+            </div>
           </div>
         </div>
       </div>
       
-      <div className="balances">
-        <div className="balances-header">
-          <h3>Optimism Balances</h3>
-          {isLoading && <Loading size="small" text="" />}
-        </div>
-        
-        <div className="total-value">
-          <span className="total-value-label">Total Value:</span>
-          <span className="total-value-amount">{formatUsd(totalValueUsd)}</span>
-        </div>
-        
-        <div className="gas-sponsorship-indicator">
-          <span className="sponsor-icon">🎁</span>
-          <span className="sponsor-text">Gas fees sponsored by ETHCALI</span>
-        </div>
-        
-        <div className="powered-by">
-          <span className="powered-text">Powered by Biconomy</span>
-        </div>
-        
-        <div className="balance-cards">
-          <div className="balance-card">
-            <div className="token-info">
-              <div className="token-icon-wrapper">
-                <img 
-                  src={ethLogoUrl}
-                  alt="ETH" 
-                  className="token-icon"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/images/ethereum.png';
-                  }}
-                />
-              </div>
-              <div className="token-details">
-                <span className="token-name">Ethereum</span>
-                <span className="token-symbol">ETH</span>
-              </div>
-            </div>
-            <div className="balance-details">
-              <div className="balance-amounts">
-                <span className="balance-value">{formatTokenBalance(balances.ethBalance, 6)}</span>
-                <span className="balance-usd">{formatUsd(ethValueUsd)}</span>
-                <span className="price-change" style={{ color: ethPrice.change24h >= 0 ? '#4CAF50' : '#ff6767' }}>
-                  {ethPrice.change24h >= 0 ? '▲' : '▼'} {Math.abs(ethPrice.change24h).toFixed(2)}%
-                </span>
-              </div>
-              <Button
-                onClick={() => openSendModal('ETH')}
-                size="small"
-                variant="outline"
-                className="send-button"
-                disabled={isLoading || isSendingTx || Number(balances.ethBalance) <= 0}
-              >
-                Send
-              </Button>
-            </div>
-          </div>
-          
-          <div className="balance-card">
-            <div className="token-info">
-              <div className="token-icon-wrapper">
-                <img 
-                  src={usdcLogoUrl}
-                  alt="USDC" 
-                  className="token-icon"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/images/usdc.png';
-                  }}
-                />
-              </div>
-              <div className="token-details">
-                <span className="token-name">USD Coin</span>
-                <span className="token-symbol">USDC</span>
-              </div>
-            </div>
-            <div className="balance-details">
-              <div className="balance-amounts">
-                <span className="balance-value">{formatTokenBalance(balances.uscBalance, 2)}</span>
-                <span className="balance-usd">{formatUsd(usdcValueUsd)}</span>
-                <span className="price-change" style={{ color: usdcPrice.change24h >= 0 ? '#4CAF50' : '#ff6767' }}>
-                  {usdcPrice.change24h >= 0 ? '▲' : '▼'} {Math.abs(usdcPrice.change24h).toFixed(2)}%
-                </span>
-              </div>
-              <Button
-                onClick={() => openSendModal('USDC')}
-                size="small"
-                variant="outline"
-                className="send-button"
-                disabled={isLoading || isSendingTx || Number(balances.uscBalance) <= 0}
-              >
-                Send
-              </Button>
-            </div>
+      <div className="balance-section">
+        <div className="balance-header">
+          <h4>Balances</h4>
+          <div className="balance-actions">
+            <Button
+              onClick={onRefresh}
+              size="small"
+              variant="outline"
+              className="refresh-button"
+              disabled={isLoading}
+            >
+              🔄 Refresh
+            </Button>
+            <Button
+              onClick={openQRScanner}
+              size="small"
+              variant="outline"
+              className="scan-button"
+            >
+              📷 Scan Wallet
+            </Button>
           </div>
         </div>
-        
-        <Button 
-          onClick={onRefresh} 
-          disabled={isLoading}
-          size="small"
-          variant="secondary"
-          className="refresh-button"
-        >
-          {isLoading ? 'Refreshing...' : 'Refresh Balances'}
-        </Button>
+
+        {isLoading ? (
+          <div className="loading-balances">
+            <Loading size="small" text="Loading balances..." />
+          </div>
+        ) : (
+          <div className="token-list">
+            {/* ETH Balance */}
+            <div className="token-item">
+              <div className="token-info">
+                <img src={ethLogoUrl} alt="ETH" className="token-icon" />
+                <div className="token-details">
+                  <span className="token-name">Ethereum</span>
+                  <span className="token-symbol">ETH</span>
+                </div>
+              </div>
+              <div className="token-balance">
+                <div className="balance-amount">{formatTokenBalance(balances.ethBalance, 6)}</div>
+                <div className="balance-usd">{formatUsd(ethValueUsd)}</div>
+              </div>
+              <div className="token-actions">
+                <Button onClick={() => openSendModal('ETH')} size="small" variant="primary">
+                  Send
+                </Button>
+              </div>
+            </div>
+            
+            {/* USDC Balance */}
+            <div className="token-item">
+              <div className="token-info">
+                <img src={usdcLogoUrl} alt="USDC" className="token-icon" />
+                <div className="token-details">
+                  <span className="token-name">USD Coin</span>
+                  <span className="token-symbol">USDC</span>
+                </div>
+              </div>
+              <div className="token-balance">
+                <div className="balance-amount">{formatTokenBalance(balances.uscBalance, 6)}</div>
+                <div className="balance-usd">{formatUsd(usdcValueUsd)}</div>
+              </div>
+              <div className="token-actions">
+                <Button onClick={() => openSendModal('USDC')} size="small" variant="primary">
+                  Send
+                </Button>
+              </div>
+            </div>
+            
+            {/* Total Balance */}
+            <div className="total-balance">
+              <div className="total-label">Total Value</div>
+              <div className="total-amount">{formatUsd(totalValueUsd)}</div>
+            </div>
+          </div>
+        )}
       </div>
       
       {/* Show transaction receipt if available */}
@@ -359,15 +348,26 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         </div>
       )}
       
+      {/* Add the QR Scanner component */}
+      {isQRScannerOpen && (
+        <QRScanner 
+          onScan={handleQRScan} 
+          onClose={() => setIsQRScannerOpen(false)} 
+        />
+      )}
+      
       {/* Send Token Modal */}
-      <SendTokenModal
-        isOpen={isSendModalOpen}
-        onClose={() => setIsSendModalOpen(false)}
-        onSend={handleSendToken}
-        tokenSymbol={selectedToken}
-        maxAmount={selectedToken === 'ETH' ? balances.ethBalance : balances.uscBalance}
-        isSending={isSendingTx}
-      />
+      {isSendModalOpen && (
+        <SendTokenModal
+          onClose={() => setIsSendModalOpen(false)}
+          onSend={handleSendToken}
+          tokenType={selectedToken}
+          balance={selectedToken === 'ETH' ? balances.ethBalance : balances.uscBalance}
+          isSending={isSendingTx}
+          txHash={txHash}
+          initialRecipient={scannedAddress || ''}
+        />
+      )}
       
       <style jsx>{`
         .wallet-info {
@@ -475,7 +475,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           font-size: 0.9rem;
         }
         
-        .address-box {
+        .address-display {
           position: relative;
           display: flex;
           align-items: center;
@@ -486,7 +486,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           margin-bottom: 0.75rem;
         }
         
-        .address {
+        .wallet-address {
           flex: 1;
           font-family: monospace;
           overflow-wrap: break-word;
@@ -514,16 +514,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           background-color: var(--toggle-hover-bg);
         }
         
-        .copy-icon {
-          font-size: 1rem;
-        }
-        
-        .address-actions {
-          display: flex;
-          gap: 1rem;
-        }
-        
-        .explorer-link {
+        .view-button {
           display: inline-flex;
           align-items: center;
           gap: 0.375rem;
@@ -534,71 +525,62 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           transition: color 0.2s;
         }
         
-        .explorer-link:hover {
+        .view-button:hover {
           color: #3D53D9;
           text-decoration: underline;
         }
         
-        .link-icon {
-          font-size: 0.9rem;
+        .address-actions {
+          display: flex;
+          gap: 1rem;
         }
         
-        .balances {
+        .balance-section {
           margin-top: 2rem;
         }
         
-        .balances-header {
+        .balance-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
           margin-bottom: 1rem;
         }
         
-        .balances-header h3 {
+        .balance-header h4 {
           margin: 0;
           color: var(--text-color);
         }
         
-        .gas-sponsorship-indicator {
+        .balance-actions {
+          display: flex;
+          gap: 8px;
+        }
+        
+        .refresh-button {
+          width: 100%;
+          border-radius: 8px;
+          font-weight: 500;
+          margin-top: 0.5rem;
+        }
+        
+        .scan-button {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          background-color: rgba(75, 102, 243, 0.1);
-          padding: 0.75rem;
-          border-radius: 8px;
-          margin-bottom: 1rem;
+          gap: 4px;
         }
         
-        .sponsor-icon {
-          font-size: 1.1rem;
+        .loading-balances {
+          margin-top: 1rem;
+          text-align: center;
         }
         
-        .sponsor-text {
-          font-size: 0.9rem;
-          color: var(--primary-color);
-          font-weight: 500;
-        }
-        
-        .powered-by {
-          display: flex;
-          justify-content: flex-end;
-          margin-bottom: 1rem;
-          font-size: 0.8rem;
-          color: var(--text-tertiary);
-        }
-        
-        .powered-text {
-          font-style: italic;
-        }
-        
-        .balance-cards {
+        .token-list {
           display: flex;
           flex-direction: column;
           gap: 0.75rem;
-          margin-bottom: 1rem;
         }
         
-        .balance-card {
+        .token-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -610,7 +592,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           transition: transform 0.2s, box-shadow 0.2s;
         }
         
-        .balance-card:hover {
+        .token-item:hover {
           transform: translateY(-2px);
           box-shadow: 0 3px 6px var(--card-shadow);
         }
@@ -621,20 +603,9 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           gap: 0.75rem;
         }
         
-        .token-icon-wrapper {
+        .token-icon {
           width: 40px;
           height: 40px;
-          border-radius: 50%;
-          background-color: var(--bg-tertiary);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 1px 3px var(--card-shadow);
-        }
-        
-        .token-icon {
-          width: 30px;
-          height: 30px;
           border-radius: 50%;
           object-fit: contain;
         }
@@ -654,19 +625,13 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           color: var(--text-secondary);
         }
         
-        .balance-details {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        
-        .balance-amounts {
+        .token-balance {
           display: flex;
           flex-direction: column;
           align-items: flex-end;
         }
         
-        .balance-value {
+        .balance-amount {
           font-weight: 600;
           font-size: 1.1rem;
           color: var(--text-color);
@@ -678,22 +643,30 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           margin-top: 0.2rem;
         }
         
-        .price-change {
-          font-size: 0.8rem;
-          margin-top: 0.2rem;
+        .token-actions {
+          display: flex;
+          gap: 0.75rem;
         }
         
-        .send-button {
-          padding: 0.25rem 0.75rem;
-          font-size: 0.85rem;
-          border-radius: 6px;
-        }
-        
-        .refresh-button {
-          width: 100%;
+        .total-balance {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          background: rgba(75, 102, 243, 0.05);
           border-radius: 8px;
+          margin-bottom: 1rem;
+        }
+        
+        .total-label {
           font-weight: 500;
-          margin-top: 0.5rem;
+          color: var(--text-secondary);
+        }
+        
+        .total-amount {
+          font-weight: 700;
+          font-size: 1.2rem;
+          color: var(--text-color);
         }
         
         .transaction-receipt {
@@ -781,27 +754,6 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           font-size: 0.9rem;
         }
         
-        .total-value {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.75rem 1rem;
-          background: rgba(75, 102, 243, 0.05);
-          border-radius: 8px;
-          margin-bottom: 1rem;
-        }
-        
-        .total-value-label {
-          font-weight: 500;
-          color: var(--text-secondary);
-        }
-        
-        .total-value-amount {
-          font-weight: 700;
-          font-size: 1.2rem;
-          color: var(--text-color);
-        }
-        
         @media (min-width: 768px) {
           .wallet-address-container {
             flex-direction: row;
@@ -815,6 +767,81 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           
           .address-details {
             flex: 1;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .wallet-address-container {
+            flex-direction: column;
+            align-items: center;
+          }
+          
+          .qr-code-container {
+            margin-bottom: 1.5rem;
+          }
+          
+          .address-details {
+            width: 100%;
+          }
+          
+          .token-item {
+            padding: 0.75rem;
+          }
+          
+          .token-icon {
+            width: 32px;
+            height: 32px;
+          }
+          
+          .token-name {
+            font-size: 0.9rem;
+          }
+          
+          .balance-amount {
+            font-size: 1rem;
+          }
+          
+          .balance-usd {
+            font-size: 0.8rem;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .balance-actions {
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+          }
+          
+          .scan-button,
+          .refresh-button {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+          }
+          
+          .token-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+          }
+          
+          .token-info {
+            width: 100%;
+          }
+          
+          .token-balance {
+            width: 100%;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+          }
+          
+          .token-actions {
+            width: 100%;
+          }
+          
+          .token-actions button {
+            width: 100%;
           }
         }
       `}</style>

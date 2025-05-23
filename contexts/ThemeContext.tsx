@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type ThemeType = 'light' | 'dark';
 
@@ -9,17 +9,17 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
-  toggleTheme: () => {}
+  toggleTheme: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Use localStorage to persist theme preference, defaulting to light
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  // Get initial theme from localStorage or system preference
   const [theme, setTheme] = useState<ThemeType>('light');
   
   useEffect(() => {
-    // Load theme preference from localStorage on initial render
+    // Check if user has saved theme preference
     const savedTheme = localStorage.getItem('theme') as ThemeType;
     if (savedTheme) {
       setTheme(savedTheme);
@@ -28,26 +28,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setTheme('dark');
     }
   }, []);
-
+  
   useEffect(() => {
-    // Update classes for Tailwind dark mode
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    
-    // Also maintain the data-theme attribute for backward compatibility
+    // Apply theme class to document and save to localStorage
     document.documentElement.setAttribute('data-theme', theme);
-    
-    // Save theme preference to localStorage
     localStorage.setItem('theme', theme);
   }, [theme]);
-
+  
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
   };
-
+  
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}

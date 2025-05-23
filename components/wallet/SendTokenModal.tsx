@@ -1,29 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 
 interface SendTokenModalProps {
-  isOpen: boolean;
   onClose: () => void;
   onSend: (recipient: string, amount: string) => Promise<void>;
-  tokenSymbol: string;
-  maxAmount: string;
+  tokenType: string;
+  balance: string;
   isSending: boolean;
+  txHash?: string | null;
+  initialRecipient?: string;
 }
 
 const SendTokenModal: React.FC<SendTokenModalProps> = ({
-  isOpen,
   onClose,
   onSend,
-  tokenSymbol,
-  maxAmount,
-  isSending
+  tokenType,
+  balance,
+  isSending,
+  txHash = null,
+  initialRecipient = ''
 }) => {
-  const [recipient, setRecipient] = useState<string>('');
+  const [recipient, setRecipient] = useState<string>(initialRecipient);
   const [amount, setAmount] = useState<string>('');
   const [error, setError] = useState<string>('');
-
-  if (!isOpen) return null;
+  
+  // Update recipient if initialRecipient changes
+  useEffect(() => {
+    if (initialRecipient) {
+      setRecipient(initialRecipient);
+    }
+  }, [initialRecipient]);
 
   const handleSend = async () => {
     // Validate recipient address
@@ -39,8 +46,8 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
     }
 
     // Validate amount is not more than max
-    if (Number(amount) > Number(maxAmount)) {
-      setError(`You don't have enough ${tokenSymbol}. Max amount: ${maxAmount}`);
+    if (Number(amount) > Number(balance)) {
+      setError(`You don't have enough ${tokenType}. Max amount: ${balance}`);
       return;
     }
 
@@ -48,7 +55,11 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
     
     try {
       await onSend(recipient, amount);
-      handleClose();
+      if (!txHash) {
+        // Only close if no transaction hash is returned
+        // If we have a txHash, we might want to show the transaction info
+        handleClose();
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to send transaction');
     }
@@ -62,14 +73,14 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
   };
 
   const handleSetMaxAmount = () => {
-    setAmount(maxAmount);
+    setAmount(balance);
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
         <div className="modal-header">
-          <h3>Send {tokenSymbol}</h3>
+          <h3>Send {tokenType}</h3>
           <button onClick={handleClose} className="close-button">&times;</button>
         </div>
 
@@ -106,11 +117,26 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
               </button>
             </div>
             <div className="balance-info">
-              Available: {maxAmount} {tokenSymbol}
+              Available: {balance} {tokenType}
             </div>
           </div>
 
           {error && <div className="error-message">{error}</div>}
+          
+          {txHash && (
+            <div className="transaction-info">
+              <p><strong>Transaction sent!</strong></p>
+              <p className="tx-hash">{txHash}</p>
+              <a 
+                href={`https://optimistic.etherscan.io/tx/${txHash}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block-explorer-link"
+              >
+                View on Optimism Explorer
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="modal-footer">
@@ -119,21 +145,23 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
             variant="secondary"
             disabled={isSending}
           >
-            Cancel
+            {txHash ? 'Close' : 'Cancel'}
           </Button>
-          <Button 
-            onClick={handleSend} 
-            variant="primary"
-            disabled={isSending}
-          >
-            {isSending ? (
-              <span className="sending-indicator">
-                <Loading size="small" text="" /> Sending...
-              </span>
-            ) : (
-              `Send ${tokenSymbol}`
-            )}
-          </Button>
+          {!txHash && (
+            <Button 
+              onClick={handleSend} 
+              variant="primary"
+              disabled={isSending}
+            >
+              {isSending ? (
+                <span className="sending-indicator">
+                  <Loading size="small" text="" /> Sending...
+                </span>
+              ) : (
+                `Send ${tokenType}`
+              )}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -152,11 +180,12 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
         }
 
         .modal-container {
-          background-color: white;
-          border-radius: 8px;
+          background-color: var(--card-bg);
+          border-radius: 12px;
           width: 90%;
           max-width: 500px;
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+          color: var(--text-color);
         }
 
         .modal-header {
@@ -164,12 +193,12 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
           justify-content: space-between;
           align-items: center;
           padding: 1rem 1.5rem;
-          border-bottom: 1px solid #eee;
+          border-bottom: 1px solid var(--card-border);
         }
 
         .modal-header h3 {
           margin: 0;
-          color: #333;
+          color: var(--text-color);
         }
 
         .close-button {
@@ -177,7 +206,31 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
           border: none;
           font-size: 1.5rem;
           cursor: pointer;
-          color: #999;
+          color: var(--text-secondary);
+        }
+        
+        .transaction-info {
+          margin-top: 1rem;
+          padding: 1rem;
+          background: var(--bg-tertiary);
+          border-radius: 8px;
+        }
+        
+        .tx-hash {
+          word-break: break-all;
+          font-family: monospace;
+          font-size: 0.9rem;
+          margin: 0.5rem 0;
+          padding: 0.5rem;
+          background: var(--bg-secondary);
+          border-radius: 4px;
+        }
+        
+        .block-explorer-link {
+          display: inline-block;
+          margin-top: 0.5rem;
+          color: var(--primary-color);
+          text-decoration: underline;
         }
 
         .modal-body {

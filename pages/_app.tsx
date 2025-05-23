@@ -2,7 +2,6 @@ import { PrivyProvider } from '@privy-io/react-auth';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
-import SmartWalletsProvider from '@/components/SmartWalletsProvider';
 import { ThemeProvider } from '../context/ThemeContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -54,13 +53,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             createOnLogin: 'all-users',
             showWalletUIs: true
           }
-          // Smart wallets are now configured directly in the Privy Dashboard
-          // https://console.privy.io/ -> Smart Wallets section
         }}
       >
-        <SmartWalletsProvider>
-          <Component {...pageProps} />
-        </SmartWalletsProvider>
+        <Component {...pageProps} />
       </PrivyProvider>
     </ThemeProvider>
   );
