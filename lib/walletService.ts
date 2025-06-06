@@ -38,14 +38,16 @@ export async function getMockBalances(address: string): Promise<TokenBalance> {
     
     return {
       ethBalance,
-      uscBalance: "10.00" // Mock USC balance as example
+      uscBalance: "10.00", // Mock USC balance as example
+      papayosBalance: "0.00" // Mock PAPAYOS balance
     };
   } catch (error) {
     console.error('Error fetching balances:', error);
     // Return mock data as fallback
     return {
       ethBalance: "0.05",
-      uscBalance: "10.00"
+      uscBalance: "10.00",
+      papayosBalance: "0.00"
     };
   }
 }

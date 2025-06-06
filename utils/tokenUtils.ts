@@ -4,7 +4,8 @@ import { TokenBalance } from '../types/index';
 export const COINGECKO_IDS = {
   ETH: 'ethereum',
   USDC: 'usd-coin',
-  OP: 'optimism'
+  OP: 'optimism',
+  PAPAYOS: 'papayos'
 };
 
 // Base URL for CoinGecko images
@@ -15,6 +16,7 @@ const FALLBACK_IMAGES = {
   ETH: '/images/ethereum.png',
   USDC: '/images/usdc.png',
   OP: '/images/optimism.png',
+  PAPAYOS: '/ppytoken.jpg',
   DEFAULT: '/images/token-default.png'
 };
 
@@ -41,6 +43,8 @@ export function getTokenLogoUrl(tokenSymbol: string): string {
       return `${COINGECKO_IMAGE_URL}/6319/large/USD_Coin_icon.png`;
     case 'OP':
       return `${COINGECKO_IMAGE_URL}/25244/large/Optimism.png`;
+    case 'PAPAYOS':
+      return '/ppytoken.jpg';
     default:
       return FALLBACK_IMAGES.DEFAULT;
   }

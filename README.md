@@ -1,162 +1,180 @@
-# Papayapp - ETH Cali Wallet
+# ETH Cali Wallet
 
-A simple Ethereum wallet application built with Next.js and Privy for authentication. This application allows users to authenticate with email or phone, access their Ethereum wallet, and use smart accounts on the Optimism network.
+A secure and easy-to-use Ethereum wallet application built with Next.js and Privy for authentication. This wallet allows users to access web3 easily with gas fees sponsored by ETH CALI, supporting multiple tokens on the Optimism network.
 
-## Deployment on Vercel
+## 🌟 Features
 
-This project is configured for automatic deployment and monitoring with Vercel:
+### 🔐 **Easy Authentication**
+- Login with email or phone via Privy
+- Automatic embedded wallet creation
+- Export private keys functionality
+- Secure authentication flow
 
-### Initial Setup
+### 💰 **Multi-Token Support**
+- **ETH**: Native Ethereum on Optimism
+- **USDC**: USD Coin (Native Circle USDC)
+- **PAPAYOS**: Custom token support with contract `0xfeEF2ce2B94B8312EEB05665e2F03efbe3B0a916`
 
-1. Install the Vercel CLI (optional but recommended for local development):
+### 🚀 **Advanced Features**
+- Real-time balance fetching from Optimism blockchain
+- Gas-sponsored transactions via Biconomy
+- QR code scanning for easy address input
+- Transaction history with Etherscan integration
+- Responsive design with dark/light mode support
+- Beautiful modern UI with TailwindCSS
+
+### 🔗 **Network Support**
+- Optimism Mainnet (Chain ID: 10)
+- Optimistic Etherscan integration
+- Real-time price data from CoinGecko
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository:**
    ```bash
-   npm install -g vercel
+   git clone https://github.com/ETHcali/ethcaliwallet.git
+   cd ethcaliwallet
    ```
 
-2. Link your local project to a Vercel project:
-   ```bash
-   vercel link
-   ```
-
-3. Deploy to Vercel:
-   ```bash
-   vercel
-   ```
-
-4. For production deployment:
-   ```bash
-   vercel --prod
-   ```
-
-### Environment Variables
-
-These are already configured in vercel.json, but you can override them in the Vercel dashboard:
-
-- `NEXT_PUBLIC_PRIVY_APP_ID`: Your Privy App ID
-- `NEXT_PUBLIC_BICONOMY_API_KEY`: Your Biconomy API key
-- `NEXT_PUBLIC_BICONOMY_PAYMASTER_URL`: Biconomy paymaster URL
-- `NEXT_PUBLIC_BICONOMY_PAYMASTER_ID`: Your Biconomy paymaster ID
-- `NEXT_PUBLIC_BICONOMY_BUNDLER_URL`: Biconomy bundler URL for Optimism
-
-### Monitoring Your Deployment
-
-1. View deployment status, logs, and analytics in the Vercel dashboard
-2. Set up alerts for deployment failures or performance issues
-
-### Local Development
-
-1. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. Run the development server:
+3. **Environment Setup:**
+   Create a `.env.local` file with your configuration:
+   ```env
+   NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id
+   NEXT_PUBLIC_BICONOMY_API_KEY=your_biconomy_api_key
+   NEXT_PUBLIC_BICONOMY_PAYMASTER_URL=your_paymaster_url
+   NEXT_PUBLIC_BICONOMY_PAYMASTER_ID=your_paymaster_id
+   NEXT_PUBLIC_BICONOMY_BUNDLER_URL=your_bundler_url
+   ```
+
+4. **Run the development server:**
    ```bash
    npm run dev
    ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. **Open your browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
+## 🏗️ Project Structure
 
-- `/papayapp`: Main Next.js application
-  - `/components`: React components
-  - `/pages`: Next.js pages and routes
-  - `/utils`: Utility functions
-  - `/types`: TypeScript type definitions
-  - `/styles`: CSS and styling
-
-## License
-
-ISC 
-
-## Smart Wallet (Account Abstraction)
-
-This application is designed with support for Account Abstraction in mind, but this feature is currently disabled. 
-
-The core wallet functionality works as follows:
-1. Users can login with email or phone via Privy
-2. Embedded wallets are automatically created
-3. Users can send, receive and export their private keys
-4. The wallet connects to Optimism mainnet by default
-
-To re-enable Smart Wallet functionality in the future, specific compatible versions of permissionless and viem libraries will be needed, along with proper configuration in the Privy dashboard.
-
-# Papayapp
-
-A simple Ethereum wallet application built with Next.js and Privy for authentication. This application allows users to authenticate with email or phone, access their own wallet, and view balances on the Optimism network.
-
-## Features
-
-- Authentication with email or phone via Privy
-- Automatic wallet creation upon login
-- Display of wallet address and balances
-- Mock ETH and USC (USDC) balance display
-- Responsive design with ETH Cali branding
-
-## Local Development
-
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd papayapp
+```
+ethcaliwallet/
+├── components/
+│   ├── shared/           # Reusable UI components
+│   └── wallet/           # Wallet-specific components
+├── pages/
+│   ├── api/             # Backend API endpoints
+│   ├── index.tsx        # Landing page
+│   └── simple-wallet.tsx # Main wallet interface
+├── hooks/               # Custom React hooks
+│   ├── useTokenBalances.ts
+│   └── useTokenPrices.ts
+├── utils/               # Utility functions
+│   ├── api.ts
+│   └── tokenUtils.ts
+├── types/               # TypeScript definitions
+├── lib/                 # Core library functions
+├── public/              # Static assets
+│   └── ppytoken.jpg     # PAPAYOS token logo
+└── styles/              # CSS and styling
 ```
 
-2. Install dependencies:
+## 💳 Supported Tokens
+
+| Token | Contract Address | Decimals | Network |
+|-------|------------------|----------|---------|
+| **ETH** | Native | 18 | Optimism |
+| **USDC** | `0x0b2c639c533813f4aa9d7837caf62653d097ff85` | 6 | Optimism |
+| **PAPAYOS** | `0xfeEF2ce2B94B8312EEB05665e2F03efbe3B0a916` | 18 | Optimism |
+
+## 🔧 Key Technologies
+
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: TailwindCSS with dark mode support
+- **Authentication**: Privy (Email/Phone)
+- **Blockchain**: Viem, Optimism
+- **Gas Sponsorship**: Biconomy Account Abstraction
+- **Deployment**: Vercel
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. **Connect to Vercel:**
+   ```bash
+   npm install -g vercel
+   vercel link
+   ```
+
+2. **Set Environment Variables** in Vercel Dashboard:
+   - `NEXT_PUBLIC_PRIVY_APP_ID`
+   - `NEXT_PUBLIC_BICONOMY_API_KEY`
+   - `NEXT_PUBLIC_BICONOMY_PAYMASTER_URL`
+   - `NEXT_PUBLIC_BICONOMY_PAYMASTER_ID`
+   - `NEXT_PUBLIC_BICONOMY_BUNDLER_URL`
+
+3. **Deploy:**
+   ```bash
+   vercel --prod
+   ```
+
+### Live Demo
+🌐 **[papayapp.vercel.app](https://papayapp.vercel.app)**
+
+## 🔐 Security Features
+
+- **Embedded Wallets**: Secure key management via Privy
+- **Account Abstraction**: Gas sponsorship for seamless UX
+- **Contract Verification**: All token contracts verified on Etherscan
+- **Secure Transactions**: Proper ABI encoding and validation
+
+## 🛠️ Development Scripts
+
 ```bash
-npm install
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm start           # Start production server
+
+# Code Quality
+npm run lint        # Run ESLint
+npm run type-check  # TypeScript type checking
 ```
 
-3. Add your Privy App ID (or use the default one for testing):
-   - Create a `.env.local` file in the project root
-   - Add `NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id`
+## 🤝 Contributing
 
-4. Run the development server:
-```bash
-npm run dev
-```
+We welcome contributions! Please follow these steps:
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser.
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
-## Deployment to Vercel
+## 📄 License
 
-This project is configured for easy deployment to Vercel:
+ISC License - see the [LICENSE](LICENSE) file for details.
 
-1. Create a new project on Vercel
-2. Connect your repository
-3. Set the following environment variables:
-   - `NEXT_PUBLIC_PRIVY_APP_ID`: Your Privy App ID
-   - `NEXT_PUBLIC_BICONOMY_API_KEY`: Your Biconomy API key
-   - `NEXT_PUBLIC_BICONOMY_PAYMASTER_URL`: Biconomy paymaster URL
-   - `NEXT_PUBLIC_BICONOMY_PAYMASTER_ID`: Your Biconomy paymaster ID
-   - `NEXT_PUBLIC_BICONOMY_BUNDLER_URL`: Biconomy bundler URL
+## 🔗 Links
 
-   Note: Default values are provided in the vercel.json configuration file, but it's recommended to set your own values in the Vercel dashboard.
+- **GitHub**: [https://github.com/ETHcali/ethcaliwallet](https://github.com/ETHcali/ethcaliwallet)
+- **Live Demo**: [https://papayapp.vercel.app](https://papayapp.vercel.app)
+- **ETH CALI**: [Learn more about ETH CALI](https://ethcali.org)
 
-4. Deploy! Vercel will automatically build and deploy your application.
+## 💡 About ETH CALI
 
-## Directory Structure
+This wallet is proudly sponsored by ETH CALI, making web3 accessible to everyone through gas-free transactions and easy-to-use interfaces.
 
-- `/pages`: Next.js pages
-  - `/api`: API endpoints
-  - `/simple-wallet.js`: Main wallet interface
-  - `/_app.js`: App configuration with Privy provider
-- `/public`: Static assets
-  - `/logo_eth_cali.png`: Logo image
-- `/components`: React components
-  - `/shared`: Shared UI components
-  - `/wallet`: Wallet-specific components
-- `/types`: TypeScript type definitions
-- `/utils`: Utility functions
+---
 
-## Technologies Used
-
-- Next.js
-- Privy for authentication
-- React
-- TypeScript
-- Vercel for deployment
-
-## License
-
-ISC 
+**Built with ❤️ by the ETH CALI community** 

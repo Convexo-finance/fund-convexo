@@ -28,7 +28,7 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
   
   // States for send token modal
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<'ETH' | 'USDC'>('ETH');
+  const [selectedToken, setSelectedToken] = useState<'ETH' | 'USDC' | 'PAPAYOS'>('ETH');
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   
@@ -45,6 +45,7 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
   // Get token logo URLs from CoinGecko
   const ethLogoUrl = getTokenLogoUrl('ETH');
   const usdcLogoUrl = getTokenLogoUrl('USDC');
+  const papayosLogoUrl = getTokenLogoUrl('PAPAYOS');
   
   // Get Optimism network logo
   const optimismLogoUrl = getNetworkLogoUrl(10); // 10 is Optimism Mainnet chain ID
@@ -55,7 +56,9 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
   
   const ethValueUsd = parseFloat(balances.ethBalance) * ethPrice.price;
   const usdcValueUsd = parseFloat(balances.uscBalance) * usdcPrice.price;
-  const totalValueUsd = ethValueUsd + usdcValueUsd;
+  // For PAPAYOS, we'll assume $0 price for now since it might not be on CoinGecko
+  const papayosValueUsd = 0;
+  const totalValueUsd = ethValueUsd + usdcValueUsd + papayosValueUsd;
   
   // Format USD values
   const formatUsd = (value: number) => {
@@ -77,7 +80,7 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
   };
   
   // Handle opening the send token modal
-  const openSendModal = (token: 'ETH' | 'USDC') => {
+  const openSendModal = (token: 'ETH' | 'USDC' | 'PAPAYOS') => {
     setSelectedToken(token);
     setIsSendModalOpen(true);
   };
@@ -148,6 +151,45 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
           params: [{
             from: wallet.address,
             to: USDC_ADDRESS,
+            data: data,
+            chainId: 10, // Optimism
+            gasMode: 'SPONSORED' // Signal to use Biconomy sponsorship when available
+          }]
+        });
+        
+        setTxHash(tx as string);
+      } else if (selectedToken === 'PAPAYOS') {
+        // PAPAYOS contract integration
+        const PAPAYOS_ADDRESS = '0xfeEF2ce2B94B8312EEB05665e2F03efbe3B0a916';
+        
+        // ERC20 transfer function ABI
+        const transferAbi = [{
+          inputs: [
+            { name: 'to', type: 'address' },
+            { name: 'amount', type: 'uint256' }
+          ],
+          name: 'transfer',
+          outputs: [{ name: '', type: 'bool' }],
+          stateMutability: 'nonpayable',
+          type: 'function'
+        }] as const;
+        
+        // Convert the amount to proper units (PAPAYOS has 18 decimals)
+        const papayosAmount = parseUnits(amount, 18);
+        
+        // Encode the function call data using viem
+        const data = encodeFunctionData({
+          abi: transferAbi,
+          functionName: 'transfer',
+          args: [recipient as `0x${string}`, papayosAmount]
+        });
+        
+        // Create the transaction
+        const tx = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: wallet.address,
+            to: PAPAYOS_ADDRESS,
             data: data,
             chainId: 10, // Optimism
             gasMode: 'SPONSORED' // Signal to use Biconomy sponsorship when available
@@ -334,6 +376,33 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
               </div>
             </div>
             
+            {/* PAPAYOS Balance */}
+            <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-4 shadow-sm hover:shadow transition-shadow duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={papayosLogoUrl} alt="PAPAYOS" className="w-10 h-10 rounded-full" />
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-200">PAPAYOS</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">PAPAYOS</div>
+                  </div>
+                </div>
+                <div className="flex-1 sm:text-right">
+                  <div className="font-semibold text-lg text-gray-800 dark:text-white">
+                    {formatTokenBalance(balances.papayosBalance, 6)}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {formatUsd(papayosValueUsd)}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => openSendModal('PAPAYOS')} 
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+            
             {/* Total Balance */}
             <div className="flex justify-between items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="font-medium text-gray-700 dark:text-gray-300">Total Value</div>
@@ -386,7 +455,7 @@ const WalletInfoTailwind: React.FC<WalletInfoProps> = ({
           onClose={() => setIsSendModalOpen(false)}
           onSend={handleSendToken}
           tokenType={selectedToken}
-          balance={selectedToken === 'ETH' ? balances.ethBalance : balances.uscBalance}
+          balance={selectedToken === 'ETH' ? balances.ethBalance : selectedToken === 'USDC' ? balances.uscBalance : balances.papayosBalance}
           isSending={isSendingTx}
           txHash={txHash}
           initialRecipient={scannedAddress || ''}
