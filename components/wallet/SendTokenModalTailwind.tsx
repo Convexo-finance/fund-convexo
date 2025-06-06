@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
+import QRScannerTailwind from './QRScannerTailwind';
 
 interface SendTokenModalProps {
   onClose: () => void;
@@ -24,6 +25,7 @@ const SendTokenModalTailwind: React.FC<SendTokenModalProps> = ({
   const [recipient, setRecipient] = useState<string>(initialRecipient);
   const [amount, setAmount] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
   
   // Update recipient if initialRecipient changes
   useEffect(() => {
@@ -76,6 +78,13 @@ const SendTokenModalTailwind: React.FC<SendTokenModalProps> = ({
     setAmount(balance);
   };
 
+  // Handle QR code scan result
+  const handleQRScan = (address: string) => {
+    setRecipient(address);
+    setIsQRScannerOpen(false);
+    setError(''); // Clear any previous errors
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="w-11/12 max-w-lg bg-white dark:bg-gray-800 rounded-xl shadow-2xl text-gray-900 dark:text-gray-100">
@@ -94,15 +103,25 @@ const SendTokenModalTailwind: React.FC<SendTokenModalProps> = ({
             <label htmlFor="recipient" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Recipient Address
             </label>
-            <input
-              id="recipient"
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="0x..."
-              disabled={isSending}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
-            />
+            <div className="flex gap-2">
+              <input
+                id="recipient"
+                type="text"
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                placeholder="0x..."
+                disabled={isSending}
+                className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
+              />
+              <button 
+                onClick={() => setIsQRScannerOpen(true)}
+                disabled={isSending}
+                className="px-4 py-3 bg-gray-100 dark:bg-gray-600 border border-gray-300 dark:border-gray-700 rounded-md font-bold text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-500 disabled:opacity-60"
+                title="Scan QR Code"
+              >
+                📷
+              </button>
+            </div>
           </div>
 
           <div className="mb-6">
@@ -186,8 +205,16 @@ const SendTokenModalTailwind: React.FC<SendTokenModalProps> = ({
           )}
         </div>
       </div>
+
+      {/* QR Scanner */}
+      {isQRScannerOpen && (
+        <QRScannerTailwind 
+          onScan={handleQRScan} 
+          onClose={() => setIsQRScannerOpen(false)} 
+        />
+      )}
     </div>
   );
 };
 
-export default SendTokenModalTailwind; 
+export default SendTokenModalTailwind;

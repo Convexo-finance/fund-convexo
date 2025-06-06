@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
+import QRScannerTailwind from './QRScannerTailwind';
 
 interface SendTokenModalProps {
   onClose: () => void;
@@ -24,6 +25,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
   const [recipient, setRecipient] = useState<string>(initialRecipient);
   const [amount, setAmount] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
   
   // Update recipient if initialRecipient changes
   useEffect(() => {
@@ -76,6 +78,18 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
     setAmount(balance);
   };
 
+  // Handle QR code scan result
+  const handleQRScan = (address: string) => {
+    setRecipient(address);
+    setIsQRScannerOpen(false);
+    setError(''); // Clear any previous errors
+  };
+
+  // Open QR scanner
+  const openQRScanner = () => {
+    setIsQRScannerOpen(true);
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-container">
@@ -87,14 +101,24 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
         <div className="modal-body">
           <div className="form-group">
             <label htmlFor="recipient">Recipient Address</label>
-            <input
-              id="recipient"
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="0x..."
-              disabled={isSending}
-            />
+            <div className="recipient-input-container">
+              <button 
+                onClick={openQRScanner} 
+                className="scan-button"
+                disabled={isSending}
+                title="Scan QR Code"
+              >
+                📷
+              </button>
+              <input
+                id="recipient"
+                type="text"
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                placeholder="0x..."
+                disabled={isSending}
+              />
+            </div>
           </div>
 
           <div className="form-group">
@@ -164,6 +188,14 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
           )}
         </div>
       </div>
+
+      {/* QR Scanner */}
+      {isQRScannerOpen && (
+        <QRScannerTailwind 
+          onScan={handleQRScan} 
+          onClose={() => setIsQRScannerOpen(false)} 
+        />
+      )}
 
       <style jsx>{`
         .modal-overlay {
@@ -270,9 +302,46 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
           box-shadow: 0 0 0 2px rgba(75, 102, 243, 0.2);
         }
 
+        .recipient-input-container {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .recipient-input-container input {
+          flex: 1;
+          padding: 0.75rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 1rem;
+        }
+
         .amount-input-container {
           display: flex;
           gap: 0.5rem;
+        }
+
+        .scan-button {
+          background-color: #f0f0f0;
+          border: 1px solid #ddd;
+          padding: 0.75rem;
+          border-radius: 4px;
+          font-size: 1rem;
+          cursor: pointer;
+          color: #555;
+          min-width: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.2s;
+        }
+
+        .scan-button:hover:not(:disabled) {
+          background-color: #e0e0e0;
+        }
+
+        .scan-button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .max-button {
