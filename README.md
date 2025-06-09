@@ -1,4 +1,4 @@
-# ETH Cali Wallet
+# ETH Cali Wallet.
 
 A secure and easy-to-use Ethereum wallet application built with Next.js and Privy for authentication. This wallet allows users to access web3 easily with gas fees sponsored by ETH CALI, supporting multiple tokens on the Optimism network.
 
