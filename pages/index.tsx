@@ -2,20 +2,11 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Layout from '../components/shared/Layout';
 import Loading from '../components/shared/Loading';
 import Button from '../components/shared/Button';
-import WalletInfo from '../components/wallet/WalletInfo';
+import WalletManager from '../components/wallet/WalletManager';
 import { TokenBalance, Wallet } from '../types/index';
-import { useTokenBalances } from '../hooks/useTokenBalances';
 
 export default function Home() {
   const { login, ready, authenticated, user, logout } = usePrivy();
-  const { wallets } = useWallets();
-  const userWallet = wallets?.[0];
-  
-  const { 
-    balances, 
-    isLoading: isBalanceLoading, 
-    refetch: refreshBalances 
-  } = useTokenBalances(userWallet?.address);
 
   if (!ready) {
     return <Loading fullScreen={true} text="Loading..." />;
@@ -24,11 +15,14 @@ export default function Home() {
   return (
     <Layout>
       {!authenticated ? (
+        // Simple login - Privy handles embedded + external wallets
         <div className="text-center py-12 px-6 bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-md mx-auto">
           <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-white">ETH CALI Wallet</h2>
-          <p className="mb-8 text-gray-600 dark:text-gray-300">Login to access your wallet</p>
-          <Button onClick={login} variant="primary" size="large">
-            Login
+          <p className="mb-8 text-gray-600 dark:text-gray-300">
+            Connect with email, social, or external wallet
+          </p>
+          <Button onClick={login} variant="primary" size="large" className="w-full">
+            Connect Wallet
           </Button>
         </div>
       ) : (
@@ -49,19 +43,8 @@ export default function Home() {
               </button>
             </div>
             
-            {userWallet ? (
-              <WalletInfo 
-                wallet={userWallet as unknown as Wallet} 
-                balances={balances}
-                isLoading={isBalanceLoading}
-                onRefresh={refreshBalances}
-              />
-            ) : (
-              <div className="text-center p-8">
-                <p className="mb-4 text-gray-600 dark:text-gray-400">Creating wallet...</p>
-                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-              </div>
-            )}
+            {/* Wallet Manager handles all wallet types */}
+            <WalletManager />
           </div>
         </div>
       )}
