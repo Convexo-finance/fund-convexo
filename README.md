@@ -1,6 +1,6 @@
 # ETH Cali Wallet.
 
-A secure and easy-to-use Ethereum wallet application built with Next.js and Privy for authentication. This wallet allows users to access web3 easily with gas fees sponsored by ETH CALI, supporting multiple tokens on the Optimism network.
+A secure and easy-to-use Ethereum wallet application built with Next.js and Privy for authentication. This wallet allows users to access web3 easily using embedded wallets, supporting multiple tokens on the Optimism network.
 
 ## 🌟 Features
 
@@ -17,7 +17,7 @@ A secure and easy-to-use Ethereum wallet application built with Next.js and Priv
 
 ### 🚀 **Advanced Features**
 - Real-time balance fetching from Optimism blockchain
-- Gas-sponsored transactions via Biconomy
+- Direct blockchain transactions via embedded wallets
 - QR code scanning for easy address input
 - Transaction history with Etherscan integration
 - Responsive design with dark/light mode support
@@ -51,10 +51,6 @@ A secure and easy-to-use Ethereum wallet application built with Next.js and Priv
    Create a `.env.local` file with your configuration:
    ```env
    NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id
-   NEXT_PUBLIC_BICONOMY_API_KEY=your_biconomy_api_key
-   NEXT_PUBLIC_BICONOMY_PAYMASTER_URL=your_paymaster_url
-   NEXT_PUBLIC_BICONOMY_PAYMASTER_ID=your_paymaster_id
-   NEXT_PUBLIC_BICONOMY_BUNDLER_URL=your_bundler_url
    ```
 
 4. **Run the development server:**
@@ -103,7 +99,7 @@ ethcaliwallet/
 - **Styling**: TailwindCSS with dark mode support
 - **Authentication**: Privy (Email/Phone)
 - **Blockchain**: Viem, Optimism
-- **Gas Sponsorship**: Biconomy Account Abstraction
+- **Embedded Wallets**: Privy Embedded Wallets
 - **Deployment**: Vercel
 
 ## 🚀 Deployment
@@ -118,10 +114,6 @@ ethcaliwallet/
 
 2. **Set Environment Variables** in Vercel Dashboard:
    - `NEXT_PUBLIC_PRIVY_APP_ID`
-   - `NEXT_PUBLIC_BICONOMY_API_KEY`
-   - `NEXT_PUBLIC_BICONOMY_PAYMASTER_URL`
-   - `NEXT_PUBLIC_BICONOMY_PAYMASTER_ID`
-   - `NEXT_PUBLIC_BICONOMY_BUNDLER_URL`
 
 3. **Deploy:**
    ```bash
@@ -134,7 +126,8 @@ ethcaliwallet/
 ## 🔐 Security Features
 
 - **Embedded Wallets**: Secure key management via Privy
-- **Account Abstraction**: Gas sponsorship for seamless UX
+- **Direct Blockchain Access**: Direct transactions to Optimism network
+- **Private Key Export**: Users can export their private keys when needed
 - **Contract Verification**: All token contracts verified on Etherscan
 - **Secure Transactions**: Proper ABI encoding and validation
 

@@ -1,5 +1,5 @@
 import { ApiResponse, BalanceResponse } from '@/types/index';
-import { formatAddress as formatWalletAddress } from '@/lib/walletService';
+// formatAddress function is now defined locally
 
 /**
  * Generic function to fetch data from API endpoints
@@ -48,7 +48,13 @@ export async function getWalletBalances(address: string) {
 }
 
 /**
- * Helper function to format Ethereum address with ellipsis
- * Re-exported from walletService for convenience
+ * Format address for display
  */
-export const formatAddress = formatWalletAddress; 
+export function formatAddress(address: string): string {
+  if (!address) return '';
+  
+  const start = address.substring(0, 6);
+  const end = address.substring(address.length - 4);
+  
+  return `${start}...${end}`;
+} 

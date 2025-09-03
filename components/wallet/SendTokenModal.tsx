@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
-import QRScannerTailwind from './QRScannerTailwind';
+import QRScanner from './QRScanner';
 
 interface SendTokenModalProps {
   onClose: () => void;
@@ -13,7 +13,7 @@ interface SendTokenModalProps {
   initialRecipient?: string;
 }
 
-const SendTokenModal: React.FC<SendTokenModalProps> = ({
+const SendTokenModalTailwind: React.FC<SendTokenModalProps> = ({
   onClose,
   onSend,
   tokenType,
@@ -85,31 +85,25 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
     setError(''); // Clear any previous errors
   };
 
-  // Open QR scanner
-  const openQRScanner = () => {
-    setIsQRScannerOpen(true);
-  };
-
   return (
-    <div className="modal-overlay">
-      <div className="modal-container">
-        <div className="modal-header">
-          <h3>Send {tokenType}</h3>
-          <button onClick={handleClose} className="close-button">&times;</button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="w-11/12 max-w-lg bg-white dark:bg-gray-800 rounded-xl shadow-2xl text-gray-900 dark:text-gray-100">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-xl font-semibold m-0">Send {tokenType}</h3>
+          <button 
+            onClick={handleClose} 
+            className="text-2xl text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-transparent border-0"
+          >
+            &times;
+          </button>
         </div>
 
-        <div className="modal-body">
-          <div className="form-group">
-            <label htmlFor="recipient">Recipient Address</label>
-            <div className="recipient-input-container">
-              <button 
-                onClick={openQRScanner} 
-                className="scan-button"
-                disabled={isSending}
-                title="Scan QR Code"
-              >
-                📷
-              </button>
+        <div className="p-6">
+          <div className="mb-6">
+            <label htmlFor="recipient" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Recipient Address
+            </label>
+            <div className="flex gap-2">
               <input
                 id="recipient"
                 type="text"
@@ -117,13 +111,24 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder="0x..."
                 disabled={isSending}
+                className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
               />
+              <button 
+                onClick={() => setIsQRScannerOpen(true)}
+                disabled={isSending}
+                className="px-4 py-3 bg-gray-100 dark:bg-gray-600 border border-gray-300 dark:border-gray-700 rounded-md font-bold text-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-500 disabled:opacity-60"
+                title="Scan QR Code"
+              >
+                📷
+              </button>
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="amount">Amount</label>
-            <div className="amount-input-container">
+          <div className="mb-6">
+            <label htmlFor="amount" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Amount
+            </label>
+            <div className="flex gap-2">
               <input
                 id="amount"
                 type="text"
@@ -131,31 +136,38 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.0"
                 disabled={isSending}
+                className="flex-grow p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
               />
               <button 
                 onClick={handleSetMaxAmount} 
-                className="max-button"
                 disabled={isSending}
+                className="px-3 bg-gray-100 dark:bg-gray-600 border border-gray-300 dark:border-gray-700 rounded-md font-bold text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-500 disabled:opacity-60"
               >
                 MAX
               </button>
             </div>
-            <div className="balance-info">
+            <div className="mt-2 text-right text-sm text-gray-600 dark:text-gray-400">
               Available: {balance} {tokenType}
             </div>
           </div>
 
-          {error && <div className="error-message">{error}</div>}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+              {error}
+            </div>
+          )}
           
           {txHash && (
-            <div className="transaction-info">
-              <p><strong>Transaction sent!</strong></p>
-              <p className="tx-hash">{txHash}</p>
+            <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-md">
+              <p className="font-semibold">Transaction sent!</p>
+              <p className="my-2 p-2 bg-gray-200 dark:bg-gray-600 rounded font-mono text-sm break-all">
+                {txHash}
+              </p>
               <a 
                 href={`https://optimistic.etherscan.io/tx/${txHash}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="block-explorer-link"
+                className="inline-block mt-2 text-blue-600 dark:text-blue-400 hover:underline"
               >
                 View on Optimism Explorer
               </a>
@@ -163,227 +175,46 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({
           )}
         </div>
 
-        <div className="modal-footer">
-          <Button 
-            onClick={handleClose} 
-            variant="secondary"
+        <div className="flex justify-end gap-4 p-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={handleClose}
             disabled={isSending}
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 font-medium disabled:opacity-60"
           >
             {txHash ? 'Close' : 'Cancel'}
-          </Button>
+          </button>
+          
           {!txHash && (
-            <Button 
-              onClick={handleSend} 
-              variant="primary"
+            <button
+              onClick={handleSend}
               disabled={isSending}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium disabled:opacity-60"
             >
               {isSending ? (
-                <span className="sending-indicator">
-                  <Loading size="small" text="" /> Sending...
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
                 </span>
               ) : (
                 `Send ${tokenType}`
               )}
-            </Button>
+            </button>
           )}
         </div>
       </div>
 
       {/* QR Scanner */}
       {isQRScannerOpen && (
-        <QRScannerTailwind 
+        <QRScanner 
           onScan={handleQRScan} 
           onClose={() => setIsQRScannerOpen(false)} 
         />
       )}
-
-      <style jsx>{`
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 1000;
-        }
-
-        .modal-container {
-          background-color: var(--card-bg);
-          border-radius: 12px;
-          width: 90%;
-          max-width: 500px;
-          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-          color: var(--text-color);
-        }
-
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem 1.5rem;
-          border-bottom: 1px solid var(--card-border);
-        }
-
-        .modal-header h3 {
-          margin: 0;
-          color: var(--text-color);
-        }
-
-        .close-button {
-          background: none;
-          border: none;
-          font-size: 1.5rem;
-          cursor: pointer;
-          color: var(--text-secondary);
-        }
-        
-        .transaction-info {
-          margin-top: 1rem;
-          padding: 1rem;
-          background: var(--bg-tertiary);
-          border-radius: 8px;
-        }
-        
-        .tx-hash {
-          word-break: break-all;
-          font-family: monospace;
-          font-size: 0.9rem;
-          margin: 0.5rem 0;
-          padding: 0.5rem;
-          background: var(--bg-secondary);
-          border-radius: 4px;
-        }
-        
-        .block-explorer-link {
-          display: inline-block;
-          margin-top: 0.5rem;
-          color: var(--primary-color);
-          text-decoration: underline;
-        }
-
-        .modal-body {
-          padding: 1.5rem;
-        }
-
-        .modal-footer {
-          padding: 1rem 1.5rem;
-          display: flex;
-          justify-content: flex-end;
-          gap: 1rem;
-          border-top: 1px solid #eee;
-        }
-
-        .form-group {
-          margin-bottom: 1.5rem;
-        }
-
-        label {
-          display: block;
-          margin-bottom: 0.5rem;
-          color: #555;
-          font-weight: 500;
-        }
-
-        input {
-          width: 100%;
-          padding: 0.75rem;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          font-size: 1rem;
-        }
-
-        input:focus {
-          outline: none;
-          border-color: #4B66F3;
-          box-shadow: 0 0 0 2px rgba(75, 102, 243, 0.2);
-        }
-
-        .recipient-input-container {
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .recipient-input-container input {
-          flex: 1;
-          padding: 0.75rem;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          font-size: 1rem;
-        }
-
-        .amount-input-container {
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .scan-button {
-          background-color: #f0f0f0;
-          border: 1px solid #ddd;
-          padding: 0.75rem;
-          border-radius: 4px;
-          font-size: 1rem;
-          cursor: pointer;
-          color: #555;
-          min-width: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background-color 0.2s;
-        }
-
-        .scan-button:hover:not(:disabled) {
-          background-color: #e0e0e0;
-        }
-
-        .scan-button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .max-button {
-          background-color: #f0f0f0;
-          border: 1px solid #ddd;
-          padding: 0 0.75rem;
-          border-radius: 4px;
-          font-size: 0.75rem;
-          font-weight: 700;
-          cursor: pointer;
-          color: #555;
-        }
-
-        .max-button:hover {
-          background-color: #e0e0e0;
-        }
-
-        .balance-info {
-          margin-top: 0.5rem;
-          font-size: 0.85rem;
-          color: #666;
-          text-align: right;
-        }
-
-        .error-message {
-          color: #d32f2f;
-          margin-top: 1rem;
-          font-size: 0.9rem;
-          padding: 0.5rem;
-          background-color: #ffebee;
-          border-radius: 4px;
-        }
-
-        .sending-indicator {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-        }
-      `}</style>
     </div>
   );
 };
 
-export default SendTokenModal; 
+export default SendTokenModalTailwind;

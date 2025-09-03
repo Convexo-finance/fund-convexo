@@ -32,7 +32,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   
-  // New state for QR scanner
+  // State for QR scanner
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
   const [scannedAddress, setScannedAddress] = useState<string | null>(null);
   
@@ -99,9 +99,8 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
       // Get the provider from the wallet
       const provider = await privyWallet.getEthereumProvider();
       
-      // Always use gas sponsorship with Biconomy paymaster when possible
       if (selectedToken === 'ETH') {
-        // Request the provider to send a transaction with gas sponsorship metadata
+        // Send ETH transaction using embedded wallet
         const value = parseUnits(amount, 18);
         const valueHex = `0x${value.toString(16)}`;
         
@@ -111,8 +110,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
             from: wallet.address,
             to: recipient,
             value: valueHex,
-            chainId: 10, // Optimism
-            gasMode: 'SPONSORED' // Signal to use Biconomy sponsorship when available
+            chainId: 10 // Optimism
           }]
         });
         
@@ -152,8 +150,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
             from: wallet.address,
             to: USDC_ADDRESS,
             data: data,
-            chainId: 10, // Optimism
-            gasMode: 'SPONSORED' // Signal to use Biconomy sponsorship when available
+            chainId: 10 // Optimism
           }]
         });
         
@@ -191,8 +188,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
             from: wallet.address,
             to: PAPAYOS_ADDRESS,
             data: data,
-            chainId: 10, // Optimism
-            gasMode: 'SPONSORED' // Signal to use Biconomy sponsorship when available
+            chainId: 10 // Optimism
           }]
         });
         
@@ -226,191 +222,222 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   };
   
   return (
-    <div className="wallet-info">
-      <div className="network-indicator">
-        <div className="network-badge">
+    <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-lg mt-4">
+      {/* Network indicator */}
+      <div className="flex justify-end mb-4">
+        <div className="flex items-center bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-full text-sm font-medium">
           <img 
             src={optimismLogoUrl}
             alt="Optimism Logo" 
-            className="network-icon"
+            className="w-4 h-4 mr-2 rounded-full"
           />
           <span>Optimism Network</span>
         </div>
       </div>
       
-      <h3>Your Wallet</h3>
+      <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Your Wallet</h3>
       
-      <div className="wallet-address-container">
-        <div className="qr-code-container">
-          <div className="qr-code">
-            <img src={qrCodeUrl} alt="Wallet Address QR Code" />
-          </div>
-          <p className="qr-help">Scan to view or send funds</p>
-        </div>
-        <div className="address-details">
-          <div className="address-header">
-            <h4>Wallet Address</h4>
-            <Button 
-              onClick={handleExportWallet}
-              size="small" 
-              variant="outline"
-              className="export-button"
-            >
-              <span className="export-icon">🔑</span>
-              Export Wallet
-            </Button>
+      {/* Wallet Address Container */}
+      <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow p-6 mb-6">
+        <div className="flex flex-col md:flex-row md:items-start">
+          {/* QR Code Container */}
+          <div className="flex flex-col items-center mb-6 md:mb-0 md:mr-6">
+            <div className="bg-white p-2 rounded-lg shadow border border-gray-200">
+              <img src={qrCodeUrl} alt="Wallet Address QR Code" className="w-36 h-36" />
+            </div>
+            <p className="text-xs text-gray-500 mt-2">Scan to view or send funds</p>
           </div>
           
-          <div className="address-display">
-            <p className="wallet-address">{wallet.address}</p>
-            <div className="address-actions">
+          {/* Address Details */}
+          <div className="w-full">
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300">Wallet Address</h4>
               <button 
-                className="copy-button"
-                onClick={() => {
-                  navigator.clipboard.writeText(wallet.address);
-                  // Show copy success message (you could add a state for this)
-                }}
+                onClick={handleExportWallet}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                📋 Copy
+                <span className="text-xs">🔑</span>
+                Export Wallet
               </button>
-              <a 
-                href={`https://optimistic.etherscan.io/address/${wallet.address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="view-button"
-              >
-                🔍 View
-              </a>
+            </div>
+            
+            <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md border border-gray-200 dark:border-gray-600 mb-3">
+              <p className="font-mono text-sm break-all text-gray-800 dark:text-gray-200 select-all overflow-hidden truncate">
+                {wallet.address}
+              </p>
+              <div className="flex gap-4 mt-2">
+                <button 
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                  onClick={() => {
+                    navigator.clipboard.writeText(wallet.address);
+                  }}
+                >
+                  📋 Copy
+                </button>
+                <a 
+                  href={`https://optimistic.etherscan.io/address/${wallet.address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                >
+                  🔍 View
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
       
-      <div className="balance-section">
-        <div className="balance-header">
-          <h4>Balances</h4>
-          <div className="balance-actions">
-            <Button
+      {/* Balances Section */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="text-lg font-medium text-gray-800 dark:text-white">Balances</h4>
+          <div className="flex gap-2 flex-col sm:flex-row">
+            <button
               onClick={onRefresh}
-              size="small"
-              variant="outline"
-              className="refresh-button"
               disabled={isLoading}
+              className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
             >
-              🔄 Refresh
-            </Button>
-            <Button
+              <span>🔄</span> Refresh
+            </button>
+            <button
               onClick={openQRScanner}
-              size="small"
-              variant="outline"
-              className="scan-button"
+              className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
-              📷 Scan Wallet
-            </Button>
+              <span>📷</span> Scan Wallet
+            </button>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="loading-balances">
-            <Loading size="small" text="Loading balances..." />
+          <div className="flex justify-center p-8">
+            <div className="flex flex-col items-center">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Loading balances...</p>
+            </div>
           </div>
         ) : (
-          <div className="token-list">
+          <div className="space-y-4">
             {/* ETH Balance */}
-            <div className="token-item">
-              <div className="token-info">
-                <img src={ethLogoUrl} alt="ETH" className="token-icon" />
-                <div className="token-details">
-                  <span className="token-name">Ethereum</span>
-                  <span className="token-symbol">ETH</span>
+            <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-4 shadow-sm hover:shadow transition-shadow duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={ethLogoUrl} alt="ETH" className="w-10 h-10 rounded-full" />
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-200">Ethereum</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">ETH</div>
+                  </div>
                 </div>
-              </div>
-              <div className="token-balance">
-                <div className="balance-amount">{formatTokenBalance(balances.ethBalance, 6)}</div>
-                <div className="balance-usd">{formatUsd(ethValueUsd)}</div>
-              </div>
-              <div className="token-actions">
-                <Button onClick={() => openSendModal('ETH')} size="small" variant="primary">
+                <div className="flex-1 sm:text-right">
+                  <div className="font-semibold text-lg text-gray-800 dark:text-white">
+                    {formatTokenBalance(balances.ethBalance, 6)}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {formatUsd(ethValueUsd)}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => openSendModal('ETH')} 
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+                >
                   Send
-                </Button>
+                </button>
               </div>
             </div>
             
             {/* USDC Balance */}
-            <div className="token-item">
-              <div className="token-info">
-                <img src={usdcLogoUrl} alt="USDC" className="token-icon" />
-                <div className="token-details">
-                  <span className="token-name">USD Coin</span>
-                  <span className="token-symbol">USDC</span>
+            <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-4 shadow-sm hover:shadow transition-shadow duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={usdcLogoUrl} alt="USDC" className="w-10 h-10 rounded-full" />
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-200">USD Coin</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">USDC</div>
+                  </div>
                 </div>
-              </div>
-              <div className="token-balance">
-                <div className="balance-amount">{formatTokenBalance(balances.uscBalance, 6)}</div>
-                <div className="balance-usd">{formatUsd(usdcValueUsd)}</div>
-              </div>
-              <div className="token-actions">
-                <Button onClick={() => openSendModal('USDC')} size="small" variant="primary">
+                <div className="flex-1 sm:text-right">
+                  <div className="font-semibold text-lg text-gray-800 dark:text-white">
+                    {formatTokenBalance(balances.uscBalance, 6)}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {formatUsd(usdcValueUsd)}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => openSendModal('USDC')} 
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+                >
                   Send
-                </Button>
+                </button>
               </div>
             </div>
             
             {/* PAPAYOS Balance */}
-            <div className="token-item">
-              <div className="token-info">
-                <img src={papayosLogoUrl} alt="PAPAYOS" className="token-icon" />
-                <div className="token-details">
-                  <span className="token-name">PAPAYOS</span>
-                  <span className="token-symbol">PAPAYOS</span>
+            <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-4 shadow-sm hover:shadow transition-shadow duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={papayosLogoUrl} alt="PAPAYOS" className="w-10 h-10 rounded-full" />
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-200">PAPAYOS</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">PAPAYOS</div>
+                  </div>
                 </div>
-              </div>
-              <div className="token-balance">
-                <div className="balance-amount">{formatTokenBalance(balances.papayosBalance, 6)}</div>
-                <div className="balance-usd">{formatUsd(papayosValueUsd)}</div>
-              </div>
-              <div className="token-actions">
-                <Button onClick={() => openSendModal('PAPAYOS')} size="small" variant="primary">
+                <div className="flex-1 sm:text-right">
+                  <div className="font-semibold text-lg text-gray-800 dark:text-white">
+                    {formatTokenBalance(balances.papayosBalance, 6)}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {formatUsd(papayosValueUsd)}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => openSendModal('PAPAYOS')} 
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+                >
                   Send
-                </Button>
+                </button>
               </div>
             </div>
             
             {/* Total Balance */}
-            <div className="total-balance">
-              <div className="total-label">Total Value</div>
-              <div className="total-amount">{formatUsd(totalValueUsd)}</div>
+            <div className="flex justify-between items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="font-medium text-gray-700 dark:text-gray-300">Total Value</div>
+              <div className="font-bold text-xl text-gray-800 dark:text-white">{formatUsd(totalValueUsd)}</div>
             </div>
           </div>
         )}
       </div>
       
-      {/* Show transaction receipt if available */}
+      {/* Transaction Receipt */}
       {txHash && (
-        <div className="transaction-receipt">
-          <div className="receipt-header">
-            <div className="success-icon">✓</div>
-            <h4>Transaction Sent</h4>
+        <div className="mb-6 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800 overflow-hidden shadow-sm">
+          <div className="flex items-center gap-3 p-4 bg-green-100 dark:bg-green-800/30 border-b border-green-200 dark:border-green-800">
+            <div className="flex items-center justify-center w-6 h-6 bg-green-600 text-white rounded-full font-bold text-sm">✓</div>
+            <h4 className="text-green-800 dark:text-green-400 font-medium">Transaction Sent</h4>
           </div>
-          <div className="receipt-content">
-            <div className="tx-hash-container">
-              <span className="tx-label">Transaction Hash:</span>
-              <code className="tx-hash">{txHash.substring(0, 10)}...{txHash.substring(txHash.length - 8)}</code>
+          <div className="p-4">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Transaction Hash:</span>
+              <code className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded text-sm font-mono">
+                {txHash.substring(0, 10)}...{txHash.substring(txHash.length - 8)}
+              </code>
               <a 
                 href={`https://optimistic.etherscan.io/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="explorer-button"
+                className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
               >
                 View on Explorer
               </a>
             </div>
-            <p className="receipt-info">Your transaction has been submitted to the network. It may take a few moments to be confirmed.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Your transaction has been submitted to the network. It may take a few moments to be confirmed.
+            </p>
           </div>
         </div>
       )}
       
-      {/* Add the QR Scanner component */}
+      {/* QR Scanner */}
       {isQRScannerOpen && (
         <QRScanner 
           onScan={handleQRScan} 
@@ -430,483 +457,6 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           initialRecipient={scannedAddress || ''}
         />
       )}
-      
-      <style jsx>{`
-        .wallet-info {
-          background: var(--bg-secondary);
-          padding: 1.5rem;
-          border-radius: 8px;
-          margin-top: 1rem;
-          position: relative;
-        }
-        
-        .network-indicator {
-          display: flex;
-          justify-content: flex-end;
-          margin-bottom: 1rem;
-        }
-        
-        .network-badge {
-          display: flex;
-          align-items: center;
-          background: #ff0b521a;
-          color: #ff0b51;
-          padding: 0.5rem 0.8rem;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 500;
-        }
-        
-        .network-icon {
-          width: 18px;
-          height: 18px;
-          margin-right: 0.5rem;
-          border-radius: 50%;
-        }
-        
-        h3 {
-          margin: 0 0 1rem 0;
-          color: var(--text-color);
-        }
-        
-        .wallet-address-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 1.5rem;
-          background: var(--card-bg);
-          border-radius: 12px;
-          border: 1px solid var(--card-border);
-          box-shadow: 0 1px 3px var(--card-shadow);
-          padding: 1.5rem;
-        }
-        
-        .qr-code-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 1.5rem;
-        }
-        
-        .qr-code {
-          background: white;
-          padding: 10px;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px var(--card-shadow);
-          border: 1px solid var(--card-border);
-        }
-        
-        .qr-code img {
-          display: block;
-          width: 150px;
-          height: 150px;
-        }
-        
-        .qr-help {
-          margin: 0.5rem 0 0 0;
-          font-size: 0.85rem;
-          color: var(--text-tertiary);
-        }
-        
-        .address-details {
-          width: 100%;
-        }
-        
-        .address-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 0.75rem;
-        }
-        
-        .address-header h4 {
-          margin: 0;
-          color: var(--text-color);
-        }
-        
-        .export-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.375rem;
-          padding: 0.25rem 0.75rem;
-          border-radius: 6px;
-          font-size: 0.85rem;
-        }
-        
-        .export-icon {
-          font-size: 0.9rem;
-        }
-        
-        .address-display {
-          position: relative;
-          display: flex;
-          align-items: center;
-          background: var(--bg-tertiary);
-          padding: 0.75rem 1rem;
-          border-radius: 8px;
-          border: 1px solid var(--card-border);
-          margin-bottom: 0.75rem;
-        }
-        
-        .wallet-address {
-          flex: 1;
-          font-family: monospace;
-          overflow-wrap: break-word;
-          font-size: 0.9rem;
-          color: var(--text-color);
-          user-select: all;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        
-        .copy-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0.25rem;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-          transition: background-color 0.2s;
-        }
-        
-        .copy-button:hover {
-          background-color: var(--toggle-hover-bg);
-        }
-        
-        .view-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.375rem;
-          color: var(--primary-color);
-          text-decoration: none;
-          font-size: 0.85rem;
-          padding: 0.25rem 0;
-          transition: color 0.2s;
-        }
-        
-        .view-button:hover {
-          color: #3D53D9;
-          text-decoration: underline;
-        }
-        
-        .address-actions {
-          display: flex;
-          gap: 1rem;
-        }
-        
-        .balance-section {
-          margin-top: 2rem;
-        }
-        
-        .balance-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 1rem;
-        }
-        
-        .balance-header h4 {
-          margin: 0;
-          color: var(--text-color);
-        }
-        
-        .balance-actions {
-          display: flex;
-          gap: 8px;
-        }
-        
-        .refresh-button {
-          width: 100%;
-          border-radius: 8px;
-          font-weight: 500;
-          margin-top: 0.5rem;
-        }
-        
-        .scan-button {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-        }
-        
-        .loading-balances {
-          margin-top: 1rem;
-          text-align: center;
-        }
-        
-        .token-list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-        
-        .token-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem;
-          background: var(--card-bg);
-          border-radius: 12px;
-          border: 1px solid var(--card-border);
-          box-shadow: 0 1px 3px var(--card-shadow);
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .token-item:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 3px 6px var(--card-shadow);
-        }
-        
-        .token-info {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-        
-        .token-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          object-fit: contain;
-        }
-        
-        .token-details {
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .token-name {
-          font-weight: 500;
-          color: var(--text-color);
-        }
-        
-        .token-symbol {
-          font-size: 0.8rem;
-          color: var(--text-secondary);
-        }
-        
-        .token-balance {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-        }
-        
-        .balance-amount {
-          font-weight: 600;
-          font-size: 1.1rem;
-          color: var(--text-color);
-        }
-        
-        .balance-usd {
-          font-size: 0.85rem;
-          color: var(--text-secondary);
-          margin-top: 0.2rem;
-        }
-        
-        .token-actions {
-          display: flex;
-          gap: 0.75rem;
-        }
-        
-        .total-balance {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.75rem 1rem;
-          background: rgba(75, 102, 243, 0.05);
-          border-radius: 8px;
-          margin-bottom: 1rem;
-        }
-        
-        .total-label {
-          font-weight: 500;
-          color: var(--text-secondary);
-        }
-        
-        .total-amount {
-          font-weight: 700;
-          font-size: 1.2rem;
-          color: var(--text-color);
-        }
-        
-        .transaction-receipt {
-          margin: 1.5rem 0;
-          background-color: #f1fbf6;
-          border-radius: 12px;
-          border: 1px solid #c5e8d1;
-          overflow: hidden;
-          box-shadow: 0 1px 3px var(--card-shadow);
-        }
-        
-        .receipt-header {
-          background-color: #e3f6ea;
-          padding: 1rem 1.5rem;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          border-bottom: 1px solid #c5e8d1;
-        }
-        
-        .receipt-header h4 {
-          margin: 0;
-          color: #2a9d5c;
-          font-size: 1.1rem;
-        }
-        
-        .success-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 24px;
-          height: 24px;
-          background-color: #2a9d5c;
-          color: white;
-          border-radius: 50%;
-          font-weight: bold;
-        }
-        
-        .receipt-content {
-          padding: 1.25rem 1.5rem;
-        }
-        
-        .tx-hash-container {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          margin-bottom: 1rem;
-          flex-wrap: wrap;
-        }
-        
-        .tx-label {
-          font-weight: 500;
-          color: var(--text-color);
-          font-size: 0.9rem;
-        }
-        
-        .tx-hash {
-          font-family: monospace;
-          background: var(--bg-tertiary);
-          padding: 0.25rem 0.5rem;
-          border-radius: 4px;
-          color: var(--text-color);
-          font-size: 0.9rem;
-        }
-        
-        .explorer-button {
-          display: inline-flex;
-          align-items: center;
-          background-color: #2a9d5c;
-          color: white;
-          text-decoration: none;
-          padding: 0.25rem 0.75rem;
-          border-radius: 4px;
-          font-size: 0.85rem;
-          transition: background-color 0.2s;
-        }
-        
-        .explorer-button:hover {
-          background-color: #237a49;
-        }
-        
-        .receipt-info {
-          margin: 0;
-          color: var(--text-secondary);
-          font-size: 0.9rem;
-        }
-        
-        @media (min-width: 768px) {
-          .wallet-address-container {
-            flex-direction: row;
-            align-items: flex-start;
-          }
-          
-          .qr-code-container {
-            margin-right: 1.5rem;
-            margin-bottom: 0;
-          }
-          
-          .address-details {
-            flex: 1;
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .wallet-address-container {
-            flex-direction: column;
-            align-items: center;
-          }
-          
-          .qr-code-container {
-            margin-bottom: 1.5rem;
-          }
-          
-          .address-details {
-            width: 100%;
-          }
-          
-          .token-item {
-            padding: 0.75rem;
-          }
-          
-          .token-icon {
-            width: 32px;
-            height: 32px;
-          }
-          
-          .token-name {
-            font-size: 0.9rem;
-          }
-          
-          .balance-amount {
-            font-size: 1rem;
-          }
-          
-          .balance-usd {
-            font-size: 0.8rem;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .balance-actions {
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 6px;
-          }
-          
-          .scan-button,
-          .refresh-button {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-          }
-          
-          .token-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.75rem;
-          }
-          
-          .token-info {
-            width: 100%;
-          }
-          
-          .token-balance {
-            width: 100%;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-          }
-          
-          .token-actions {
-            width: 100%;
-          }
-          
-          .token-actions button {
-            width: 100%;
-          }
-        }
-      `}</style>
     </div>
   );
 };

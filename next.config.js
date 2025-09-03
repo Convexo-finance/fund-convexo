@@ -4,10 +4,6 @@ const nextConfig = {
   // Ensure all environment variables used with NEXT_PUBLIC prefix are properly forwarded
   env: {
     NEXT_PUBLIC_PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID || process.env.PRIVY_APP_ID,
-    NEXT_PUBLIC_BICONOMY_API_KEY: process.env.NEXT_PUBLIC_BICONOMY_API_KEY || process.env.BICONOMY_API_KEY,
-    NEXT_PUBLIC_BICONOMY_PAYMASTER_URL: process.env.NEXT_PUBLIC_BICONOMY_PAYMASTER_URL || process.env.BICONOMY_PAYMASTER_URL,
-    NEXT_PUBLIC_BICONOMY_PAYMASTER_ID: process.env.NEXT_PUBLIC_BICONOMY_PAYMASTER_ID || process.env.BICONOMY_PAYMASTER_ID,
-    NEXT_PUBLIC_BICONOMY_BUNDLER_URL: process.env.NEXT_PUBLIC_BICONOMY_BUNDLER_URL || process.env.BICONOMY_BUNDLER_URL,
     PRIVY_APP_SECRET: process.env.PRIVY_APP_SECRET,
   },
   // Increase serverless function timeout for API routes
