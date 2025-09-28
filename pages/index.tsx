@@ -35,7 +35,7 @@ export default function Home() {
         </div>
 
         {/* Platform Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Enterprise Platform */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
             <div className="text-center">
@@ -127,8 +127,54 @@ export default function Home() {
               </p>
             </div>
           </div>
-        </div>
 
+          {/* Admin Platform */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-red-600 dark:text-red-400 text-2xl">👨‍💼</span>
+              </div>
+              <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
+                Para Administradores
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                Loan approvals, KYC management, and platform monitoring for Convexo administrators.
+              </p>
+              
+              <div className="space-y-3 mb-6 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Approve & mint loan NFTs</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Manage investor & enterprise verification</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Monitor vault health & performance</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Track loan repayments & fees</span>
+                </div>
+              </div>
+
+              <Button 
+                onClick={() => router.push('/admin')}
+                variant="primary" 
+                size="large" 
+                className="w-full bg-red-600 hover:bg-red-700 border-red-600"
+              >
+                👨‍💼 Access Admin Platform
+              </Button>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                convexus.xyz/admin
+              </p>
+            </div>
+          </div>
+            </div>
+            
         {/* Platform Stats */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
           <h3 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-6">
