@@ -77,7 +77,7 @@ export default function Home() {
                 🏢 Access Enterprise Platform
               </Button>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                enterprises.convexo.xyz
+                convexus.xyz/enterprises
               </p>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function Home() {
                 💼 Access Investor Platform
               </Button>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                investors.convexo.xyz
+                convexus.xyz/investors
               </p>
             </div>
           </div>

@@ -34,7 +34,7 @@ const InvestorDashboard: React.FC = () => {
             Connect Wallet
           </Button>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
-            investors.convexo.xyz - Powered by Privy
+            convexus.xyz/investors - Powered by Privy
           </p>
         </div>
       </Layout>
