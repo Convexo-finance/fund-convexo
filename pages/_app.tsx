@@ -28,11 +28,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <PrivyProvider
         appId={PRIVY_APP_ID}
         config={{
-          loginMethods: ['email', 'google', 'farcaster', 'telegram', 'passkey', 'wallet'],
+          loginMethods: ['email', 'google', 'passkey', 'wallet'],
           appearance: {
             theme: 'light',
-            accentColor: '#4B66F3',
-            logo: '/logo_eth_cali.png',
+            accentColor: '#6B21A8', // Purple color for Convexo
+            logo: '/logo_convexo.png',
           },
           embeddedWallets: {
             createOnLogin: 'all-users',

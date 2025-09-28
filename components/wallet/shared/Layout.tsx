@@ -10,12 +10,12 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
-  title = 'ETH CALI Wallet', 
-  description = 'A secure and easy-to-use Ethereum wallet to get into web3 easily. Fully open-sourced with gas fees sponsored by ETH CALI.' 
+  title = 'Convexo Wallet', 
+  description = 'Una fintech de crowdfunding internacional que conecta empresas de capital físico intensivo con infraestructura financiera internacional para inversionistas globales.' 
 }) => {
   // Define the site URL and image paths for metadata
-  const siteUrl = 'https://papayapp.vercel.app';
-  const imageUrl = `${siteUrl}/banner_ethcali.jpg`;
+  const siteUrl = 'https://convexo.finance';
+  const imageUrl = `${siteUrl}/banner_convexo.jpg`;
   
   return (
     <div className="min-h-screen flex flex-col w-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -40,18 +40,18 @@ const Layout: React.FC<LayoutProps> = ({
         <meta property="twitter:image" content={imageUrl} />
         
         {/* Additional SEO metadata */}
-        <meta name="keywords" content="ethereum, wallet, crypto, blockchain, web3, optimism, ETHCALI" />
-        <meta name="author" content="ETH CALI" />
+        <meta name="keywords" content="ethereum, wallet, crypto, blockchain, web3, optimism, convexo, fintech, crowdfunding" />
+        <meta name="author" content="Convexo" />
       </Head>
 
-      <header className="py-8 px-4 text-center border-b border-gray-200 dark:border-gray-800 bg-black relative z-10">
+      <header className="py-8 px-4 text-center border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-purple-900 to-purple-600 relative z-10">
         <div className="relative py-6 flex flex-col items-center">
-          <div className="absolute top-0 right-0">
+          <div className="absolute top-0 right-0 flex items-center space-x-2">
             <ThemeToggle />
           </div>
           <img 
-            src="/logo_eth_cali_blanco.png" 
-            alt="ETH CALI Logo" 
+            src="/logo_convexo.png" 
+            alt="Convexo Logo" 
             className="w-36 h-auto mb-4 filter drop-shadow-md md:w-40"
           />
           <h1 className="text-white text-xl font-semibold text-shadow-sm md:text-2xl">{title}</h1>
@@ -64,8 +64,8 @@ const Layout: React.FC<LayoutProps> = ({
         </div>
       </main>
 
-      <footer className="py-6 px-4 text-center border-t border-gray-200 dark:border-gray-800 bg-black text-white text-sm">
-        <p className="opacity-90">Powered by ETH CALI</p>
+      <footer className="py-6 px-4 text-center border-t border-gray-200 dark:border-gray-800 bg-gradient-to-r from-purple-900 to-purple-600 text-white text-sm">
+        <p className="opacity-90">Powered by Convexo</p>
       </footer>
     </div>
   );
