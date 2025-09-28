@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Button from '../wallet/shared/Button';
 import { usePrivyContracts } from '../../hooks/usePrivyContracts';
 
@@ -6,6 +7,7 @@ type FundingMode = 'investor' | 'enterprise';
 
 const FundingModule: React.FC = () => {
   const { isConnected } = usePrivyContracts();
+  const router = useRouter();
   const [mode, setMode] = useState<FundingMode>('investor');
 
   if (!isConnected) {
@@ -73,8 +75,12 @@ const FundingModule: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                 Deposit USDC to earn yield from the Convexo vault.
               </p>
-              <Button variant="primary" className="w-full">
-                Coming Soon - Deposit
+              <Button 
+                onClick={() => router.push('/contracts')}
+                variant="primary" 
+                className="w-full"
+              >
+                🧪 Test Live Vault
               </Button>
             </div>
             
@@ -83,8 +89,12 @@ const FundingModule: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                 Redeem your vault shares back to USDC.
               </p>
-              <Button variant="secondary" className="w-full">
-                Coming Soon - Withdraw
+              <Button 
+                onClick={() => router.push('/contracts')}
+                variant="secondary" 
+                className="w-full"
+              >
+                🧪 Test Live Vault
               </Button>
             </div>
           </div>
@@ -108,8 +118,12 @@ const FundingModule: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                 Check your active loans and payment history.
               </p>
-              <Button variant="outline" className="w-full">
-                Coming Soon - View Loans
+              <Button 
+                onClick={() => router.push('/contracts')}
+                variant="outline" 
+                className="w-full"
+              >
+                🧪 Test Live Loans
               </Button>
             </div>
             
@@ -118,8 +132,12 @@ const FundingModule: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                 Make payments towards your active loans.
               </p>
-              <Button variant="primary" className="w-full">
-                Coming Soon - Repay
+              <Button 
+                onClick={() => router.push('/contracts')}
+                variant="primary" 
+                className="w-full"
+              >
+                🧪 Test Live Payments
               </Button>
             </div>
           </div>

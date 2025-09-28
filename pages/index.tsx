@@ -154,6 +154,25 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Developer Tools */}
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-center text-gray-800 dark:text-white mb-4">
+            🔧 Developer Tools
+          </h3>
+          <div className="flex justify-center">
+            <Button 
+              onClick={() => router.push('/contracts')}
+              variant="outline"
+              className="text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-600"
+            >
+              🧪 Test Live Contracts
+            </Button>
+          </div>
+          <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
+            Interact directly with deployed Base Sepolia contracts
+          </p>
+        </div>
+
         {/* Footer Info */}
         <div className="text-center py-6">
           <p className="text-sm text-gray-500 dark:text-gray-400">
