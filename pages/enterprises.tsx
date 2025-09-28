@@ -1,18 +1,34 @@
-import React, { useState } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import React, { useState, useEffect } from 'react';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Layout from '../components/wallet/shared/Layout';
 import Loading from '../components/wallet/shared/Loading';
 import Button from '../components/wallet/shared/Button';
 import EnterpriseProfile from '../components/enterprise/EnterpriseProfile';
-import KYBVerification from '../components/enterprise/KYBVerification';
+import EnterpriseVerification from '../components/enterprise/EnterpriseVerification';
 import EnterpriseFinancial from '../components/enterprise/EnterpriseFinancial';
-import EnterpriseFunding from '../components/enterprise/EnterpriseFunding';
+import EnterpriseLoans from '../components/enterprise/EnterpriseLoans';
+import EnterpriseTreasury from '../components/enterprise/EnterpriseTreasury';
+import { contractService } from '../services/contractService';
 
-type TabType = 'profile' | 'verification' | 'financial' | 'funding';
+type TabType = 'profile' | 'verification' | 'financial' | 'loans' | 'treasury';
 
 const EnterpriseDashboard: React.FC = () => {
   const { login, ready, authenticated, user, logout } = usePrivy();
+  const { wallets } = useWallets();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
+  const [contractsInitialized, setContractsInitialized] = useState(false);
+
+  // Initialize contract service
+  useEffect(() => {
+    if (authenticated && wallets.length > 0) {
+      const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
+      if (embeddedWallet) {
+        contractService.initialize(embeddedWallet).then(success => {
+          setContractsInitialized(success);
+        });
+      }
+    }
+  }, [authenticated, wallets]);
 
   if (!ready) {
     return <Loading fullScreen={true} text="Loading..." />;
@@ -47,21 +63,24 @@ const EnterpriseDashboard: React.FC = () => {
     { id: 'profile', label: 'Profile', icon: '👤', description: 'Account & wallet info' },
     { id: 'verification', label: 'Verification', icon: '🔍', description: 'KYB & Sumsub' },
     { id: 'financial', label: 'Financial', icon: '📊', description: 'AI scoring & analysis' },
-    { id: 'funding', label: 'Funding', icon: '💰', description: 'Cash in/out operations' },
+    { id: 'loans', label: 'Loans', icon: '📄', description: 'Loan requests & status' },
+    { id: 'treasury', label: 'Treasury', icon: '💰', description: 'Cash in/out operations' },
   ] as const;
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <EnterpriseProfile />;
+        return <EnterpriseProfile user={user} />;
       case 'verification':
-        return <KYBVerification />;
+        return <EnterpriseVerification />;
       case 'financial':
         return <EnterpriseFinancial />;
-      case 'funding':
-        return <EnterpriseFunding />;
+      case 'loans':
+        return <EnterpriseLoans contractsInitialized={contractsInitialized} />;
+      case 'treasury':
+        return <EnterpriseTreasury contractsInitialized={contractsInitialized} />;
       default:
-        return <EnterpriseProfile />;
+        return <EnterpriseProfile user={user} />;
     }
   };
 

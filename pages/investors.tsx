@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import React, { useState, useEffect } from 'react';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Layout from '../components/wallet/shared/Layout';
 import Loading from '../components/wallet/shared/Loading';
 import Button from '../components/wallet/shared/Button';
-import EnterpriseProfile from '../components/enterprise/EnterpriseProfile';
+import InvestorProfile from '../components/investor/InvestorProfile';
 import InvestorVerification from '../components/investor/InvestorVerification';
+import InvestorInvestments from '../components/investor/InvestorInvestments';
+import InvestorPortfolio from '../components/investor/InvestorPortfolio';
+import { contractService } from '../services/contractService';
 
 type TabType = 'profile' | 'verification' | 'investments' | 'portfolio';
 
 const InvestorDashboard: React.FC = () => {
   const { login, ready, authenticated, user, logout } = usePrivy();
+  const { wallets } = useWallets();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
+  const [contractsInitialized, setContractsInitialized] = useState(false);
+
+  // Initialize contract service with Privy wallet
+  useEffect(() => {
+    if (authenticated && wallets.length > 0) {
+      const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
+      if (embeddedWallet) {
+        contractService.initialize(embeddedWallet).then(success => {
+          setContractsInitialized(success);
+        });
+      }
+    }
+  }, [authenticated, wallets]);
 
   if (!ready) {
     return <Loading fullScreen={true} text="Loading..." />;
@@ -51,39 +68,15 @@ const InvestorDashboard: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <EnterpriseProfile />;
+        return <InvestorProfile user={user} />;
       case 'verification':
         return <InvestorVerification />;
       case 'investments':
-        return (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-purple-600 dark:text-purple-400 text-2xl">💰</span>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Investment Module
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Vault deposits, withdrawals, and yield tracking coming soon.
-            </p>
-          </div>
-        );
+        return <InvestorInvestments contractsInitialized={contractsInitialized} />;
       case 'portfolio':
-        return (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-green-600 dark:text-green-400 text-2xl">📈</span>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Portfolio Tracking
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Performance analytics and portfolio insights coming soon.
-            </p>
-          </div>
-        );
+        return <InvestorPortfolio contractsInitialized={contractsInitialized} />;
       default:
-        return <EnterpriseProfile />;
+        return <InvestorProfile user={user} />;
     }
   };
 

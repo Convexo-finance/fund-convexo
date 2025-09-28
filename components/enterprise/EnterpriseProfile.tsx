@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useWallets } from '@privy-io/react-auth';
 import Button from '../wallet/shared/Button';
-import { usePrivyContracts } from '../../hooks/usePrivyContracts';
+import { contractService } from '../../services/contractService';
 
-const EnterpriseProfile: React.FC = () => {
-  const { user } = usePrivy();
+interface EnterpriseProfileProps {
+  user: any;
+}
+
+const EnterpriseProfile: React.FC<EnterpriseProfileProps> = ({ user }) => {
   const { wallets } = useWallets();
-  const { 
-    embeddedWallet, 
-    walletAddress, 
-    isConnected, 
-    getUSDCBalance 
-  } = usePrivyContracts();
+  const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
+  const walletAddress = embeddedWallet?.address as `0x${string}` | undefined;
   
   const [usdcBalance, setUsdcBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
@@ -20,20 +19,20 @@ const EnterpriseProfile: React.FC = () => {
   useEffect(() => {
     if (walletAddress) {
       setBalanceLoading(true);
-      getUSDCBalance(walletAddress)
+      contractService.getUSDCBalance(walletAddress)
         .then(setUsdcBalance)
         .finally(() => setBalanceLoading(false));
     }
-  }, [walletAddress, getUSDCBalance]);
+  }, [walletAddress]);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Enterprise Profile</h2>
         <div className="flex items-center space-x-2">
-          <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+          <div className={`w-3 h-3 rounded-full ${walletAddress ? 'bg-green-500' : 'bg-red-500'}`} />
           <span className="text-sm text-gray-600 dark:text-gray-400">
-            {isConnected ? 'Connected' : 'Disconnected'}
+            {walletAddress ? 'Connected' : 'Disconnected'}
           </span>
         </div>
       </div>
@@ -98,15 +97,15 @@ const EnterpriseProfile: React.FC = () => {
               <p className="text-lg font-bold text-gray-900 dark:text-white">
                 {balanceLoading ? 'Loading...' : `${usdcBalance.toFixed(2)} USDC`}
               </p>
-              <button 
-                onClick={() => {
-                  if (walletAddress) {
-                    setBalanceLoading(true);
-                    getUSDCBalance(walletAddress)
-                      .then(setUsdcBalance)
-                      .finally(() => setBalanceLoading(false));
-                  }
-                }}
+                <button 
+                  onClick={() => {
+                    if (walletAddress) {
+                      setBalanceLoading(true);
+                      contractService.getUSDCBalance(walletAddress)
+                        .then(setUsdcBalance)
+                        .finally(() => setBalanceLoading(false));
+                    }
+                  }}
                 className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 mt-1"
                 disabled={!walletAddress || balanceLoading}
               >
