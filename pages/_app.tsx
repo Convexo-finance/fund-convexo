@@ -1,24 +1,7 @@
 import { PrivyProvider } from '@privy-io/react-auth';
-import { WagmiConfig, configureChains, createConfig } from 'wagmi';
-import { mainnet, optimism, base } from 'viem/chains';
-import { publicProvider } from 'wagmi/providers/public';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 import { ThemeProvider } from '../context/ThemeContext';
-import { BASE_SEPOLIA } from '../config/contracts';
-
-// Configure wagmi
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [BASE_SEPOLIA, mainnet, optimism, base],
-  [publicProvider()]
-);
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: [],
-  publicClient,
-  webSocketPublicClient,
-});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -54,14 +37,38 @@ function MyApp({ Component, pageProps }: AppProps) {
             createOnLogin: 'all-users',
             showWalletUIs: true
           },
-          // Use Base Sepolia as default for dApp testing
-          defaultChain: BASE_SEPOLIA,
-          supportedChains: [BASE_SEPOLIA, mainnet, optimism, base]
+          // Use Base Sepolia as default for dApp testing  
+          defaultChain: {
+            id: 84532,
+            name: 'Base Sepolia',
+            network: 'base-sepolia',
+            nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+            rpcUrls: {
+              default: { http: ['https://sepolia.base.org'] },
+              public: { http: ['https://sepolia.base.org'] },
+            },
+            blockExplorers: {
+              default: { name: 'BaseScan', url: 'https://sepolia.basescan.org' },
+            },
+            testnet: true,
+          },
+          supportedChains: [{
+            id: 84532,
+            name: 'Base Sepolia',
+            network: 'base-sepolia',
+            nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+            rpcUrls: {
+              default: { http: ['https://sepolia.base.org'] },
+              public: { http: ['https://sepolia.base.org'] },
+            },
+            blockExplorers: {
+              default: { name: 'BaseScan', url: 'https://sepolia.basescan.org' },
+            },
+            testnet: true,
+          }]
         }}
       >
-        <WagmiConfig config={wagmiConfig}>
-          <Component {...pageProps} />
-        </WagmiConfig>
+        <Component {...pageProps} />
       </PrivyProvider>
     </ThemeProvider>
   );
