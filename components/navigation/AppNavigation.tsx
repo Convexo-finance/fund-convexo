@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import Button from '../wallet/shared/Button';
 
@@ -64,15 +65,35 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
             </button>
           </div>
 
-          {/* Logout Button */}
-          <Button
-            onClick={logout}
-            variant="outline"
-            size="small"
-            className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 border-gray-300 dark:border-gray-600"
-          >
-            🚪 Logout
-          </Button>
+          {/* Quick Links */}
+          <div className="flex items-center space-x-2">
+            <Link href="/investor">
+              <Button
+                variant="outline"
+                size="small"
+                className="text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+              >
+                💼 Investor
+              </Button>
+            </Link>
+            <Link href="/enterprise">
+              <Button
+                variant="outline"
+                size="small"
+                className="text-blue-600 dark:text-blue-400 border-blue-300 dark:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              >
+                🏢 Enterprise
+              </Button>
+            </Link>
+            <Button
+              onClick={logout}
+              variant="outline"
+              size="small"
+              className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 border-gray-300 dark:border-gray-600"
+            >
+              🚪 Logout
+            </Button>
+          </div>
         </div>
       </div>
     </div>

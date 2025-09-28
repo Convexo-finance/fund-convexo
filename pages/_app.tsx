@@ -1,8 +1,24 @@
 import { PrivyProvider } from '@privy-io/react-auth';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { mainnet, optimism, base } from 'viem/chains';
+import { publicProvider } from 'wagmi/providers/public';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 import { ThemeProvider } from '../context/ThemeContext';
+import { BASE_SEPOLIA } from '../config/contracts';
+
+// Configure wagmi
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [BASE_SEPOLIA, mainnet, optimism, base],
+  [publicProvider()]
+);
+
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors: [],
+  publicClient,
+  webSocketPublicClient,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -38,12 +54,14 @@ function MyApp({ Component, pageProps }: AppProps) {
             createOnLogin: 'all-users',
             showWalletUIs: true
           },
-          // Multi-chain configuration - Tier 3 EVM chains
-          defaultChain: optimism,
-          supportedChains: [mainnet, optimism, base]
+          // Use Base Sepolia as default for dApp testing
+          defaultChain: BASE_SEPOLIA,
+          supportedChains: [BASE_SEPOLIA, mainnet, optimism, base]
         }}
       >
-        <Component {...pageProps} />
+        <WagmiConfig config={wagmiConfig}>
+          <Component {...pageProps} />
+        </WagmiConfig>
       </PrivyProvider>
     </ThemeProvider>
   );
