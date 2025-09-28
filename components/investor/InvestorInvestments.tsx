@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useWallets } from '@privy-io/react-auth';
 import Button from '../wallet/shared/Button';
-import { contractService } from '../../services/contractService';
-import { CONTRACTS } from '../../config/contracts';
+import { useVault } from '../../hooks/useVault';
+import { initializeWalletClient, getCurrentAddress } from '../../lib/viem';
 
 interface InvestorInvestmentsProps {
   contractsInitialized: boolean;
@@ -10,6 +10,8 @@ interface InvestorInvestmentsProps {
 
 const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInitialized }) => {
   const { wallets } = useWallets();
+  const vault = useVault();
+  
   const [vaultStats, setVaultStats] = useState({
     apy: 0,
     valuePerShare: 1,
@@ -22,23 +24,35 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
   });
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawShares, setWithdrawShares] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [txStatus, setTxStatus] = useState('');
+  const [walletInitialized, setWalletInitialized] = useState(false);
 
   const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
   const walletAddress = embeddedWallet?.address as `0x${string}` | undefined;
 
+  // Initialize wallet client
+  useEffect(() => {
+    if (embeddedWallet && !walletInitialized) {
+      initializeWalletClient(embeddedWallet).then(success => {
+        setWalletInitialized(success);
+        if (success) {
+          console.log('Wallet client initialized successfully');
+        }
+      });
+    }
+  }, [embeddedWallet, walletInitialized]);
+
   const loadData = async () => {
-    if (!contractsInitialized || !walletAddress) return;
+    if (!walletInitialized || !walletAddress) return;
 
     try {
       const [apy, valuePerShare, totalAssets, totalSupply, usdcBalance, vaultBalance] = await Promise.all([
-        contractService.getVaultAPY(),
-        contractService.getVaultValuePerShare(),
-        contractService.getVaultTotalAssets(),
-        contractService.getVaultTotalSupply(),
-        contractService.getUSDCBalance(walletAddress),
-        contractService.getVaultBalance(walletAddress),
+        vault.getPreviewAPY(),
+        vault.getVaultValuePerShare(),
+        vault.getTotalAssets(),
+        vault.getTotalSupply(),
+        vault.getUSDCBalance(walletAddress),
+        vault.getShareBalance(walletAddress),
       ]);
 
       setVaultStats({ apy, valuePerShare, totalAssets, totalSupply });
@@ -50,7 +64,7 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
 
   useEffect(() => {
     loadData();
-  }, [contractsInitialized, walletAddress]);
+  }, [walletInitialized, walletAddress]);
 
   const handleDeposit = async () => {
     if (!walletAddress || !depositAmount) return;
@@ -58,13 +72,11 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
     const amount = parseFloat(depositAmount);
     if (amount <= 0 || amount > userBalances.usdc) return;
 
-    setIsLoading(true);
     try {
-      setTxStatus('Step 1/2: Approving USDC...');
-      await contractService.approveUSDC(CONTRACTS.vault.address, amount);
+      setTxStatus('🔄 Processing deposit workflow...');
       
-      setTxStatus('Step 2/2: Depositing to vault...');
-      const hash = await contractService.depositToVault(amount, walletAddress);
+      // Use the new vault workflow that handles approval + deposit
+      const hash = await vault.depositWorkflow(amount);
       
       setTxStatus(`✅ Success! Tx: ${hash}`);
       setDepositAmount('');
@@ -73,8 +85,7 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
       setTimeout(loadData, 3000);
     } catch (error: any) {
       setTxStatus(`❌ Error: ${error.message}`);
-    } finally {
-      setIsLoading(false);
+      console.error('Deposit error:', error);
     }
   };
 
@@ -84,10 +95,9 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
     const shares = parseFloat(withdrawShares);
     if (shares <= 0 || shares > userBalances.vault) return;
 
-    setIsLoading(true);
     try {
-      setTxStatus('Withdrawing from vault...');
-      const hash = await contractService.withdrawFromVault(shares, walletAddress, walletAddress);
+      setTxStatus('🔄 Redeeming vault shares...');
+      const hash = await vault.redeem(shares, walletAddress, walletAddress);
       
       setTxStatus(`✅ Success! Tx: ${hash}`);
       setWithdrawShares('');
@@ -96,12 +106,11 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
       setTimeout(loadData, 3000);
     } catch (error: any) {
       setTxStatus(`❌ Error: ${error.message}`);
-    } finally {
-      setIsLoading(false);
+      console.error('Withdraw error:', error);
     }
   };
 
-  if (!contractsInitialized) {
+  if (!walletInitialized) {
     return (
       <div className="text-center py-8">
         <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -219,14 +228,14 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
               size="large"
               className="w-full"
               disabled={
-                isLoading || 
+                vault.isLoading || 
                 !depositAmount || 
                 parseFloat(depositAmount) <= 0 || 
                 parseFloat(depositAmount) > userBalances.usdc ||
-                !contractsInitialized
+                !walletInitialized
               }
             >
-              {isLoading ? 'Processing...' : '💰 Deposit to Vault'}
+              {vault.isLoading ? 'Processing...' : '💰 Deposit to Vault'}
             </Button>
           </div>
         </div>
@@ -289,14 +298,14 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
               size="large"
               className="w-full"
               disabled={
-                isLoading || 
+                vault.isLoading || 
                 !withdrawShares || 
                 parseFloat(withdrawShares) <= 0 || 
                 parseFloat(withdrawShares) > userBalances.vault ||
-                !contractsInitialized
+                !walletInitialized
               }
             >
-              {isLoading ? 'Processing...' : '💸 Withdraw from Vault'}
+              {vault.isLoading ? 'Processing...' : '💸 Withdraw from Vault'}
             </Button>
           </div>
         </div>
