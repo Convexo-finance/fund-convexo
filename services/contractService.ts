@@ -17,6 +17,32 @@ export class ContractService {
     try {
       const provider = await privyWallet.getEthereumProvider();
       
+      // Ensure we're connected to Base Sepolia
+      try {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x14a34' }], // Base Sepolia chain ID in hex
+        });
+      } catch (switchError: any) {
+        // If the chain doesn't exist, add it
+        if (switchError.code === 4902) {
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: '0x14a34',
+              chainName: 'Base Sepolia',
+              nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18,
+              },
+              rpcUrls: ['https://sepolia.base.org'],
+              blockExplorerUrls: ['https://sepolia.basescan.org'],
+            }],
+          });
+        }
+      }
+      
       this.walletClient = createWalletClient({
         account: privyWallet.address as `0x${string}`,
         chain: BASE_SEPOLIA,
@@ -24,6 +50,8 @@ export class ContractService {
       });
       
       this.userAddress = privyWallet.address as `0x${string}`;
+      
+      console.log('Contract service initialized for:', this.userAddress);
       return true;
     } catch (error) {
       console.error('Failed to initialize contract service:', error);
@@ -48,20 +76,42 @@ export class ContractService {
     }
   }
 
-  // Generic write contract function
-  async writeContract(contractKey: keyof typeof CONTRACTS, functionName: string, args: any[] = []) {
+  // Check if wallet is properly connected
+  async ensureConnection() {
     if (!this.walletClient || !this.userAddress) {
-      throw new Error('Wallet not initialized');
+      throw new Error('Wallet not initialized. Please refresh and try again.');
     }
 
     try {
+      // Test connection by getting the chain ID
+      const chainId = await this.walletClient.getChainId();
+      if (chainId !== BASE_SEPOLIA.id) {
+        throw new Error(`Wrong network. Please switch to Base Sepolia (Chain ID: ${BASE_SEPOLIA.id})`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Connection check failed:', error);
+      throw new Error('Wallet connection lost. Please refresh and reconnect.');
+    }
+  }
+
+  // Generic write contract function
+  async writeContract(contractKey: keyof typeof CONTRACTS, functionName: string, args: any[] = []) {
+    // Ensure connection before any write operation
+    await this.ensureConnection();
+
+    try {
       const contract = CONTRACTS[contractKey];
+      console.log(`Writing to ${contractKey}.${functionName} with args:`, args);
+      
       const hash = await this.walletClient.writeContract({
         address: contract.address,
         abi: contract.abi as any,
         functionName,
         args,
       });
+      
+      console.log(`Transaction hash: ${hash}`);
       return hash;
     } catch (error) {
       console.error(`Error writing ${contractKey}.${functionName}:`, error);

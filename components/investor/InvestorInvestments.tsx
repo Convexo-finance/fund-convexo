@@ -337,6 +337,20 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
         </div>
       )}
 
+      {/* Troubleshooting */}
+      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+        <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
+          🔧 Troubleshooting Connection Issues
+        </h4>
+        <div className="text-amber-800 dark:text-amber-200 text-sm space-y-1">
+          <p>• <strong>Provider Disconnected:</strong> Refresh the page and reconnect your wallet</p>
+          <p>• <strong>Wrong Network:</strong> Ensure you're connected to Base Sepolia (Chain ID: 84532)</p>
+          <p>• <strong>No USDC:</strong> Get test USDC from Base Sepolia faucet</p>
+          <p>• <strong>Approval Needed:</strong> First approve USDC, then deposit to vault</p>
+          <p>• <strong>Gas Fees:</strong> Ensure you have ETH for transaction fees</p>
+        </div>
+      </div>
+
       {/* Investment Guide */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
