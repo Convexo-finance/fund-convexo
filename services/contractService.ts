@@ -37,7 +37,7 @@ export class ContractService {
       const contract = CONTRACTS[contractKey];
       const result = await publicClient.readContract({
         address: contract.address,
-        abi: contract.abi,
+        abi: contract.abi as any,
         functionName,
         args,
       });
@@ -58,7 +58,7 @@ export class ContractService {
       const contract = CONTRACTS[contractKey];
       const hash = await this.walletClient.writeContract({
         address: contract.address,
-        abi: contract.abi,
+        abi: contract.abi as any,
         functionName,
         args,
       });
@@ -72,7 +72,7 @@ export class ContractService {
   // USDC Functions
   async getUSDCBalance(address: `0x${string}`) {
     const balance = await this.readContract('usdc', 'balanceOf', [address]);
-    return Number(formatUnits(balance as bigint, USDC_DECIMALS));
+    return Number(formatUnits(balance as unknown as bigint, USDC_DECIMALS));
   }
 
   async approveUSDC(spender: `0x${string}`, amount: number) {
@@ -82,33 +82,33 @@ export class ContractService {
 
   async getUSDCAllowance(owner: `0x${string}`, spender: `0x${string}`) {
     const allowance = await this.readContract('usdc', 'allowance', [owner, spender]);
-    return Number(formatUnits(allowance as bigint, USDC_DECIMALS));
+    return Number(formatUnits(allowance as unknown as bigint, USDC_DECIMALS));
   }
 
   // Vault Functions
   async getVaultAPY() {
     const apy = await this.readContract('vault', 'previewAPY', []);
-    return Number(formatUnits(apy as bigint, 4)); // APY with 4 decimals (basis points)
+    return Number(formatUnits(apy as unknown as bigint, 4)); // APY with 4 decimals (basis points)
   }
 
   async getVaultValuePerShare() {
     const value = await this.readContract('vault', 'vaultValuePerShare', []);
-    return Number(formatUnits(value as bigint, USDC_DECIMALS));
+    return Number(formatUnits(value as unknown as bigint, USDC_DECIMALS));
   }
 
   async getVaultBalance(address: `0x${string}`) {
     const balance = await this.readContract('vault', 'balanceOf', [address]);
-    return Number(formatUnits(balance as bigint, VAULT_DECIMALS));
+    return Number(formatUnits(balance as unknown as bigint, VAULT_DECIMALS));
   }
 
   async getVaultTotalAssets() {
     const total = await this.readContract('vault', 'totalAssets', []);
-    return Number(formatUnits(total as bigint, USDC_DECIMALS));
+    return Number(formatUnits(total as unknown as bigint, USDC_DECIMALS));
   }
 
   async getVaultTotalSupply() {
     const supply = await this.readContract('vault', 'totalSupply', []);
-    return Number(formatUnits(supply as bigint, VAULT_DECIMALS));
+    return Number(formatUnits(supply as unknown as bigint, VAULT_DECIMALS));
   }
 
   async depositToVault(amount: number, receiver: `0x${string}`) {
@@ -128,11 +128,11 @@ export class ContractService {
       
       return {
         borrower: loanData.borrower,
-        principal: Number(formatUnits(loanData.principal, USDC_DECIMALS)),
-        interestRate: Number(formatUnits(loanData.interestRate, 4)), // Basis points
+        principal: Number(formatUnits(loanData.principal as unknown as bigint, USDC_DECIMALS)),
+        interestRate: Number(formatUnits(loanData.interestRate as unknown as bigint, 4)), // Basis points
         termLength: Number(loanData.termLength),
         startTime: Number(loanData.startTime),
-        amountPaid: Number(formatUnits(loanData.amountPaid, USDC_DECIMALS)),
+        amountPaid: Number(formatUnits(loanData.amountPaid as unknown as bigint, USDC_DECIMALS)),
         isActive: loanData.isActive,
       };
     } catch (error) {
@@ -165,7 +165,7 @@ export class ContractService {
 
   async getTotalRepaid(loanId: number) {
     const total = await this.readContract('collector', 'totalRepaid', [BigInt(loanId)]);
-    return Number(formatUnits(total as bigint, USDC_DECIMALS));
+    return Number(formatUnits(total as unknown as bigint, USDC_DECIMALS));
   }
 
   async getFeeBps() {
@@ -188,11 +188,11 @@ export class ContractService {
 
   // Format helpers
   formatUSDC(amount: bigint) {
-    return Number(formatUnits(amount, USDC_DECIMALS));
+    return Number(formatUnits(amount as unknown as bigint, USDC_DECIMALS));
   }
 
   formatVaultShares(shares: bigint) {
-    return Number(formatUnits(shares, VAULT_DECIMALS));
+    return Number(formatUnits(shares as unknown as bigint, VAULT_DECIMALS));
   }
 
   parseUSDC(amount: number) {
