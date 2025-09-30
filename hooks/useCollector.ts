@@ -10,7 +10,8 @@ export function useCollector() {
   // Read Functions
   const getTotalRepaid = useCallback(async (loanId: number) => {
     try {
-      const total = await readContract(ADDRESSES.Collector, collectorABI, 'totalRepaid', [BigInt(loanId)]);
+      const result = await readContract(ADDRESSES.Collector, collectorABI, 'totalRepaid', [BigInt(loanId)]);
+      const total = Array.isArray(result) ? result[0] : result;
       return Number(formatUSDC(total as bigint));
     } catch (error) {
       console.error('Error getting total repaid:', error);
@@ -20,7 +21,8 @@ export function useCollector() {
 
   const getFeeBps = useCallback(async () => {
     try {
-      const fee = await readContract(ADDRESSES.Collector, collectorABI, 'feeBps', []);
+      const result = await readContract(ADDRESSES.Collector, collectorABI, 'feeBps', []);
+      const fee = Array.isArray(result) ? result[0] : result;
       return Number(fee);
     } catch (error) {
       console.error('Error getting fee basis points:', error);
@@ -30,7 +32,8 @@ export function useCollector() {
 
   const getFeeRecipient = useCallback(async () => {
     try {
-      const recipient = await readContract(ADDRESSES.Collector, collectorABI, 'feeRecipient', []);
+      const result = await readContract(ADDRESSES.Collector, collectorABI, 'feeRecipient', []);
+      const recipient = Array.isArray(result) ? result[0] : result;
       return recipient as string;
     } catch (error) {
       console.error('Error getting fee recipient:', error);
@@ -39,12 +42,14 @@ export function useCollector() {
   }, []);
 
   const getUSDCBalance = useCallback(async (address: `0x${string}`) => {
-    const balance = await readContract(ADDRESSES.USDC, usdcABI, 'balanceOf', [address]);
+    const result = await readContract(ADDRESSES.USDC, usdcABI, 'balanceOf', [address]);
+    const balance = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(balance as bigint));
   }, []);
 
   const getUSDCAllowance = useCallback(async (owner: `0x${string}`, spender: `0x${string}`) => {
-    const allowance = await readContract(ADDRESSES.USDC, usdcABI, 'allowance', [owner, spender]);
+    const result = await readContract(ADDRESSES.USDC, usdcABI, 'allowance', [owner, spender]);
+    const allowance = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(allowance as bigint));
   }, []);
 
