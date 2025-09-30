@@ -244,6 +244,24 @@ const InvestorPortfolio: React.FC<InvestorPortfolioProps> = ({ contractsInitiali
           <p><strong>Vault Shares (CVXS):</strong> {portfolio.vaultShares.toFixed(6)}</p>
           <p><strong>Share Value:</strong> ${portfolio.shareValue.toFixed(4)}</p>
           <p><strong>Loading:</strong> {loading ? 'Yes' : 'No'}</p>
+          <p><strong>Vault Contract:</strong> <span className="font-mono">0xd61bc1202D0B920D80b69762B78B4ce05dF03D1C</span></p>
+          <p><strong>Expected CVXS:</strong> 10,000 (from Basescan)</p>
+        </div>
+        <div className="mt-3">
+          <Button 
+            onClick={() => {
+              console.log('Manual balance check for:', walletAddress);
+              if (walletAddress) {
+                vault.getShareBalance(walletAddress).then(balance => {
+                  console.log('Manual balance result:', balance);
+                });
+              }
+            }}
+            variant="outline"
+            size="small"
+          >
+            🔍 Test Balance Query
+          </Button>
         </div>
       </div>
 

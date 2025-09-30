@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { readContract, writeContract, toUSDC, formatUSDC, toVaultShares, formatVaultShares, getCurrentAddress } from '../lib/viem';
+import { formatUnits } from 'viem';
 import { ADDRESSES } from '../lib/addresses';
 import vaultABI from '../src/abi/ConvexoVault.json';
 import usdcABI from '../src/abi/ERC20.json';
@@ -10,11 +11,32 @@ export function useVault() {
   // Read Functions
   const getShareBalance = useCallback(async (address: `0x${string}`) => {
     console.log('Getting share balance for address:', address);
-    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'balanceOf', [address]);
-    const balance = Array.isArray(result) ? result[0] : result;
-    const formattedBalance = Number(formatVaultShares(balance as bigint));
-    console.log('Share balance result:', { result, balance, formattedBalance });
-    return formattedBalance;
+    console.log('Using vault contract address:', ADDRESSES.ConvexoVault);
+    console.log('Using vault ABI:', vaultABI);
+    
+    try {
+      const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'balanceOf', [address]);
+      console.log('Raw contract result:', result);
+      
+      const balance = Array.isArray(result) ? result[0] : result;
+      console.log('Extracted balance:', balance);
+      console.log('Balance type:', typeof balance);
+      
+      const formattedBalance = Number(formatVaultShares(balance as bigint));
+      console.log('Formatted balance:', formattedBalance);
+      console.log('formatVaultShares function result:', formatVaultShares(balance as bigint));
+      console.log('Raw balance as string:', balance.toString());
+      console.log('Raw balance as number:', Number(balance));
+      
+      // Test with 6 decimals instead of 18
+      const testWith6Decimals = Number(formatUnits(balance as bigint, 6));
+      console.log('Test with 6 decimals:', testWith6Decimals);
+      
+      return formattedBalance;
+    } catch (error) {
+      console.error('Error getting share balance:', error);
+      return 0;
+    }
   }, []);
 
   const convertToAssets = useCallback(async (shares: number) => {
