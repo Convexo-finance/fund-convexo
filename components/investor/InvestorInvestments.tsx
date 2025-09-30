@@ -198,14 +198,14 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="0.00"
-                  disabled={isLoading}
+                  disabled={vault.isLoading}
                 />
                 <button
                   onClick={() => setDepositAmount(userBalances.usdc.toString())}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 
                            text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 
                            dark:hover:text-purple-200 font-medium"
-                  disabled={isLoading}
+                  disabled={vault.isLoading}
                 >
                   MAX
                 </button>
@@ -268,14 +268,14 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="0.000000"
-                  disabled={isLoading}
+                  disabled={vault.isLoading}
                 />
                 <button
                   onClick={() => setWithdrawShares(userBalances.vault.toString())}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 
                            text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 
                            dark:hover:text-purple-200 font-medium"
-                  disabled={isLoading}
+                  disabled={vault.isLoading}
                 >
                   MAX
                 </button>
