@@ -9,43 +9,54 @@ export function useVault() {
 
   // Read Functions
   const getShareBalance = useCallback(async (address: `0x${string}`) => {
-    const balance = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'balanceOf', [address]);
-    return Number(formatVaultShares(balance as bigint));
+    console.log('Getting share balance for address:', address);
+    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'balanceOf', [address]);
+    const balance = Array.isArray(result) ? result[0] : result;
+    const formattedBalance = Number(formatVaultShares(balance as bigint));
+    console.log('Share balance result:', { result, balance, formattedBalance });
+    return formattedBalance;
   }, []);
 
   const convertToAssets = useCallback(async (shares: number) => {
     const sharesBigInt = toVaultShares(shares);
-    const assets = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'convertToAssets', [sharesBigInt]);
+    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'convertToAssets', [sharesBigInt]);
+    const assets = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(assets as bigint));
   }, []);
 
   const getVaultValuePerShare = useCallback(async () => {
-    const value = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'vaultValuePerShare', []);
+    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'vaultValuePerShare', []);
+    const value = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(value as bigint));
   }, []);
 
   const getPreviewAPY = useCallback(async () => {
-    const apy = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'previewAPY', []);
+    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'previewAPY', []);
+    const apy = Array.isArray(result) ? result[0] : result;
     return Number(apy) / 100; // Convert from basis points to percentage
   }, []);
 
   const getTotalAssets = useCallback(async () => {
-    const total = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'totalAssets', []);
+    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'totalAssets', []);
+    const total = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(total as bigint));
   }, []);
 
   const getTotalSupply = useCallback(async () => {
-    const supply = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'totalSupply', []);
+    const result = await readContract(ADDRESSES.ConvexoVault, vaultABI, 'totalSupply', []);
+    const supply = Array.isArray(result) ? result[0] : result;
     return Number(formatVaultShares(supply as bigint));
   }, []);
 
   const getUSDCBalance = useCallback(async (address: `0x${string}`) => {
-    const balance = await readContract(ADDRESSES.USDC, usdcABI, 'balanceOf', [address]);
+    const result = await readContract(ADDRESSES.USDC, usdcABI, 'balanceOf', [address]);
+    const balance = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(balance as bigint));
   }, []);
 
   const getUSDCAllowance = useCallback(async (owner: `0x${string}`, spender: `0x${string}`) => {
-    const allowance = await readContract(ADDRESSES.USDC, usdcABI, 'allowance', [owner, spender]);
+    const result = await readContract(ADDRESSES.USDC, usdcABI, 'allowance', [owner, spender]);
+    const allowance = Array.isArray(result) ? result[0] : result;
     return Number(formatUSDC(allowance as bigint));
   }, []);
 

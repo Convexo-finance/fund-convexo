@@ -38,7 +38,8 @@ export function useLoanNFT() {
 
   const getTotalSupply = useCallback(async () => {
     try {
-      const total = await readContract(ADDRESSES.LoanNoteNFT, loanNFTABI, 'totalSupply', []);
+      const result = await readContract(ADDRESSES.LoanNoteNFT, loanNFTABI, 'totalSupply', []);
+      const total = Array.isArray(result) ? result[0] : result;
       return Number(total);
     } catch (error) {
       console.error('Error getting total loans:', error);
@@ -48,7 +49,8 @@ export function useLoanNFT() {
 
   const ownerOf = useCallback(async (loanId: number) => {
     try {
-      const owner = await readContract(ADDRESSES.LoanNoteNFT, loanNFTABI, 'ownerOf', [BigInt(loanId)]);
+      const result = await readContract(ADDRESSES.LoanNoteNFT, loanNFTABI, 'ownerOf', [BigInt(loanId)]);
+      const owner = Array.isArray(result) ? result[0] : result;
       return owner as string;
     } catch (error) {
       console.error('Error getting loan owner:', error);
@@ -58,7 +60,8 @@ export function useLoanNFT() {
 
   const balanceOf = useCallback(async (address: `0x${string}`) => {
     try {
-      const balance = await readContract(ADDRESSES.LoanNoteNFT, loanNFTABI, 'balanceOf', [address]);
+      const result = await readContract(ADDRESSES.LoanNoteNFT, loanNFTABI, 'balanceOf', [address]);
+      const balance = Array.isArray(result) ? result[0] : result;
       return Number(balance);
     } catch (error) {
       console.error('Error getting NFT balance:', error);

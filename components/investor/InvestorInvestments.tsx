@@ -44,7 +44,12 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
   }, [embeddedWallet, walletInitialized]);
 
   const loadData = async () => {
-    if (!walletInitialized || !walletAddress) return;
+    if (!walletInitialized || !walletAddress) {
+      console.log('Wallet not ready:', { walletInitialized, walletAddress });
+      return;
+    }
+
+    console.log('Loading vault data for address:', walletAddress);
 
     try {
       const [apy, valuePerShare, totalAssets, totalSupply, usdcBalance, vaultBalance] = await Promise.all([
@@ -55,6 +60,15 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
         vault.getUSDCBalance(walletAddress),
         vault.getShareBalance(walletAddress),
       ]);
+
+      console.log('Vault data loaded:', { 
+        apy, 
+        valuePerShare, 
+        totalAssets, 
+        totalSupply, 
+        usdcBalance, 
+        vaultBalance 
+      });
 
       setVaultStats({ apy, valuePerShare, totalAssets, totalSupply });
       setUserBalances({ usdc: usdcBalance, vault: vaultBalance });
@@ -372,6 +386,19 @@ const InvestorInvestments: React.FC<InvestorInvestmentsProps> = ({ contractsInit
           <p>• <strong>Yield:</strong> Interest payments from loans generate APY for investors</p>
           <p>• <strong>Shares:</strong> Your CVXS shares represent proportional ownership</p>
           <p>• <strong>Withdraw:</strong> Redeem shares for USDC anytime (subject to liquidity)</p>
+        </div>
+      </div>
+
+      {/* Wallet Status */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+          🔗 Wallet Connection Status
+        </h4>
+        <div className="text-blue-800 dark:text-blue-200 text-sm space-y-1">
+          <p><strong>Wallet Initialized:</strong> {walletInitialized ? '✅ Yes' : '❌ No'}</p>
+          <p><strong>Wallet Address:</strong> <span className="font-mono">{walletAddress || 'Not connected'}</span></p>
+          <p><strong>USDC Balance:</strong> ${userBalances.usdc.toFixed(2)}</p>
+          <p><strong>Vault Shares (CVXS):</strong> {userBalances.vault.toFixed(6)}</p>
         </div>
       </div>
 
