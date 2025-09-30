@@ -3,6 +3,7 @@ import { useWallets } from '@privy-io/react-auth';
 import Button from '../wallet/shared/Button';
 import { useVault } from '../../hooks/useVault';
 import { initializeWalletClient, getCurrentAddress } from '../../lib/viem';
+import { CONTRACTS } from '../../config/contracts';
 
 interface InvestorInvestmentsProps {
   contractsInitialized: boolean;
