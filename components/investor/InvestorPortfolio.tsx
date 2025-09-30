@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useWallets } from '@privy-io/react-auth';
 import Button from '../wallet/shared/Button';
-import { contractService } from '../../services/contractService';
+import { useVault } from '../../hooks/useVault';
+import { initializeWalletClient } from '../../lib/viem';
 
 interface InvestorPortfolioProps {
   contractsInitialized: boolean;
@@ -20,6 +21,7 @@ interface PortfolioData {
 
 const InvestorPortfolio: React.FC<InvestorPortfolioProps> = ({ contractsInitialized }) => {
   const { wallets } = useWallets();
+  const vault = useVault();
   const [portfolio, setPortfolio] = useState<PortfolioData>({
     usdcBalance: 0,
     vaultShares: 0,
@@ -31,21 +33,40 @@ const InvestorPortfolio: React.FC<InvestorPortfolioProps> = ({ contractsInitiali
     apy: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [walletInitialized, setWalletInitialized] = useState(false);
 
   const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
   const walletAddress = embeddedWallet?.address as `0x${string}` | undefined;
 
+  // Initialize wallet client
+  useEffect(() => {
+    if (embeddedWallet && !walletInitialized) {
+      initializeWalletClient(embeddedWallet).then(success => {
+        setWalletInitialized(success);
+        if (success) {
+          console.log('Wallet client initialized successfully in portfolio');
+        }
+      });
+    }
+  }, [embeddedWallet, walletInitialized]);
+
   const loadPortfolioData = async () => {
-    if (!contractsInitialized || !walletAddress) return;
+    if (!walletInitialized || !walletAddress) {
+      console.log('Wallet not ready for portfolio loading:', { walletInitialized, walletAddress });
+      return;
+    }
 
     setLoading(true);
     try {
+      console.log('Loading portfolio data for address:', walletAddress);
       const [usdcBalance, vaultShares, shareValue, apy] = await Promise.all([
-        contractService.getUSDCBalance(walletAddress),
-        contractService.getVaultBalance(walletAddress),
-        contractService.getVaultValuePerShare(),
-        contractService.getVaultAPY(),
+        vault.getUSDCBalance(walletAddress),
+        vault.getShareBalance(walletAddress),
+        vault.getVaultValuePerShare(),
+        vault.getPreviewAPY(),
       ]);
+
+      console.log('Portfolio data loaded:', { usdcBalance, vaultShares, shareValue, apy });
 
       const currentValue = vaultShares * shareValue;
       // For demo purposes, assume initial investment was at $1/share
@@ -71,20 +92,22 @@ const InvestorPortfolio: React.FC<InvestorPortfolioProps> = ({ contractsInitiali
   };
 
   useEffect(() => {
-    loadPortfolioData();
-  }, [contractsInitialized, walletAddress]);
+    if (walletInitialized && walletAddress) {
+      loadPortfolioData();
+    }
+  }, [walletAddress, walletInitialized]);
 
-  if (!contractsInitialized) {
+  if (!walletInitialized) {
     return (
       <div className="text-center py-8">
         <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-yellow-600 dark:text-yellow-400 text-2xl">⏳</span>
         </div>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          Loading Portfolio
+          Initializing Wallet Connection
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          Fetching your investment data...
+          Setting up connection to Base Sepolia...
         </p>
       </div>
     );
@@ -206,6 +229,21 @@ const InvestorPortfolio: React.FC<InvestorPortfolioProps> = ({ contractsInitiali
             </div>
             <p className="text-sm text-purple-700 dark:text-purple-300">Total Return</p>
           </div>
+        </div>
+      </div>
+
+      {/* Debug Information */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+          🔧 Debug Information
+        </h4>
+        <div className="text-blue-800 dark:text-blue-200 text-sm space-y-1">
+          <p><strong>Wallet Initialized:</strong> {walletInitialized ? '✅ Yes' : '❌ No'}</p>
+          <p><strong>Wallet Address:</strong> <span className="font-mono">{walletAddress || 'Not connected'}</span></p>
+          <p><strong>USDC Balance:</strong> ${portfolio.usdcBalance.toFixed(2)}</p>
+          <p><strong>Vault Shares (CVXS):</strong> {portfolio.vaultShares.toFixed(6)}</p>
+          <p><strong>Share Value:</strong> ${portfolio.shareValue.toFixed(4)}</p>
+          <p><strong>Loading:</strong> {loading ? 'Yes' : 'No'}</p>
         </div>
       </div>
 
